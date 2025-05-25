@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Colouring Book for Kids</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #fceabb, #f8b500);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+  }
+  h1 {
+    color: #4a148c;
+    font-size: 3em;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px #fff;
+  }
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(74,20,140,0.2);
+    width: 180px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .card:hover {
+    transform: scale(1.1);
+  }
+  .card img {
+    width: 100%;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+  .card button {
+    background: #4a148c;
+    border: none;
+    color: white;
+    font-size: 1.1em;
+    padding: 12px;
+    width: 100%;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    cursor: pointer;
+  }
+  .card button:hover {
+    background: #7e57c2;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎨 Colouring Book for Kids 🎨</h1>
+
+<div class="gallery">
+
+  <div class="card">
+    <img src="Colouring-Images/Jungle.png" alt="Jungle" />
+    <button onclick="location.href='jungle.html'">Paint Jungle</button>
+  </div>
+
+  <div class="card">
+    <img src="Colouring-Images/Farm.png" alt="Farm" />
+    <button onclick="location.href='farm.html'">Paint Farm</button>
+  </div>
+
+  <div class="card">
+    <img src="Colouring-Images/Ocean.png" alt="Ocean" />
+    <button onclick="location.href='ocean.html'">Paint Ocean</button>
+  </div>
+
+  <div class="card">
+    <img src="Colouring-Images/Dinosaur.png" alt="Dinosaur" />
+    <button onclick="location.href='dinosaur.html'">Paint Dinosaur</button>
+  </div>
+
+  <div class="card">
+    <img src="Colouring-Images/Garden.png" alt="Garden" />
+    <button onclick="location.href='garden.html'">Paint Garden</button>
+  </div>
+
+</div>
+
+</body>
+</html>
