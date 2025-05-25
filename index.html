@@ -3,50 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coloring App - Home</title>
+  <title>Select a Scene to Start Coloring</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
       text-align: center;
-      padding: 40px;
+      padding: 50px;
+      background-color: #f0f8ff;
     }
     h1 {
-      color: #333;
+      margin-bottom: 40px;
     }
-    ul {
-      list-style-type: none;
-      padding: 0;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    li {
-      margin: 15px 0;
-    }
-    a {
-      display: block;
-      padding: 12px 20px;
-      background-color: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
+    .btn {
+      display: inline-block;
+      margin: 10px 15px;
+      padding: 15px 30px;
       font-size: 18px;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
       transition: background-color 0.3s ease;
     }
-    a:hover {
-      background-color: #45a049;
+    .btn:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to Coloring App</h1>
-  <p>Select a scene to start coloring:</p>
-  <ul>
-    <li><a href="jungle.html" target="_blank">Jungle</a></li>
-    <li><a href="ocean.html" target="_blank">Ocean</a></li>
-    <li><a href="forest.html" target="_blank">Forest</a></li>
-    <li><a href="space.html" target="_blank">Space</a></li>
-    <li><a href="city.html" target="_blank">City</a></li>
-  </ul>
+  <h1>Select a Scene to Start Coloring:</h1>
+  <a class="btn" href="jungle_coloring.html">Jungle</a>
+  <a class="btn" href="ocean_coloring.html">Ocean</a>
+  <a class="btn" href="forest_coloring.html">Forest</a>
+  <a class="btn" href="space_coloring.html">Space</a>
+  <a class="btn" href="city_coloring.html">City</a>
 </body>
 </html>
