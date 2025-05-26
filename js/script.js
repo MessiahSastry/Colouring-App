@@ -1,4 +1,3 @@
-
 const bgCanvas = document.getElementById('bgCanvas');
 const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
@@ -144,12 +143,24 @@ document.getElementById('uploadBtn').onclick = () => {
   };
   input.click();
 };
+
 document.getElementById('musicToggle').onclick = () => {
   const music = document.getElementById('bgMusic');
   music.muted = false;
   if (music.paused) music.play(); else music.pause();
 };
+
 document.getElementById('toggleToolbar').onclick = () => {
   document.getElementById('toolbar').classList.toggle('hide');
 };
+
+// Fullscreen toggle functionality
+document.getElementById('fullscreenBtn').onclick = function() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+};
+
 window.onload = () => saveState();
