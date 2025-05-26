@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="="en">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -87,11 +87,33 @@
       transform: scale(1.05);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
+
+    /* Add Flying Fairy Animation */
+    .fairy {
+      position: absolute;
+      top: 30%;
+      left: 10%;
+      width: 50px;
+      height: 50px;
+      background: url('fairy.png') no-repeat center center;
+      animation: fly 8s infinite linear;
+    }
+
+    @keyframes fly {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(200px, 50px); }
+      50% { transform: translate(400px, 0); }
+      75% { transform: translate(200px, -50px); }
+      100% { transform: translate(0, 0); }
+    }
   </style>
 </head>
 <body>
   <div class="blob"></div>
   <div class="blob"></div>
+
+  <!-- Add the flying fairy -->
+  <div class="fairy"></div>
 
   <div class="title">
     <h1>St. Patrick's</h1>
@@ -109,3 +131,4 @@
   </div>
 </body>
 </html>
+
