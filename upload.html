@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Upload Your Picture</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="school-title">
-    <span style="color:hsl(0, 90%, 55%)">S</span><span style="color:hsl(30, 90%, 55%)">t</span><span style="color:hsl(60, 90%, 55%)">.</span><span style="color:hsl(90, 90%, 55%)"> </span><span style="color:hsl(120, 90%, 55%)">P</span><span style="color:hsl(150, 90%, 55%)">a</span><span style="color:hsl(180, 90%, 55%)">t</span><span style="color:hsl(210, 90%, 55%)">r</span><span style="color:hsl(240, 90%, 55%)">i</span><span style="color:hsl(270, 90%, 55%)">c</span><span style="color:hsl(300, 90%, 55%)">k</span><span style="color:hsl(330, 90%, 55%)">'</span><span style="color:hsl(0, 90%, 55%)">s</span><span style="color:hsl(30, 90%, 55%)"> </span><span style="color:hsl(60, 90%, 55%)">S</span><span style="color:hsl(90, 90%, 55%)">c</span><span style="color:hsl(120, 90%, 55%)">h</span><span style="color:hsl(150, 90%, 55%)">o</span><span style="color:hsl(180, 90%, 55%)">o</span><span style="color:hsl(210, 90%, 55%)">l</span>
-  </div>
-
+  <div class="school-title"><span style="color:hsl(0, 90%, 55%)">S</span><span style="color:hsl(30, 90%, 55%)">t</span><span style="color:hsl(60, 90%, 55%)">.</span><span style="color:hsl(90, 90%, 55%)"> </span><span style="color:hsl(120, 90%, 55%)">P</span><span style="color:hsl(150, 90%, 55%)">a</span><span style="color:hsl(180, 90%, 55%)">t</span><span style="color:hsl(210, 90%, 55%)">r</span><span style="color:hsl(240, 90%, 55%)">i</span><span style="color:hsl(270, 90%, 55%)">c</span><span style="color:hsl(300, 90%, 55%)">k</span><span style="color:hsl(330, 90%, 55%)">'</span><span style="color:hsl(0, 90%, 55%)">s</span><span style="color:hsl(30, 90%, 55%)"> </span><span style="color:hsl(60, 90%, 55%)">S</span><span style="color:hsl(90, 90%, 55%)">c</span><span style="color:hsl(120, 90%, 55%)">h</span><span style="color:hsl(150, 90%, 55%)">o</span><span style="color:hsl(180, 90%, 55%)">o</span><span style="color:hsl(210, 90%, 55%)">l</span></div>
+  <button id="toggleToolbar" class="toolbar-toggle">⇋</button>
   <div class="toolbar-wrapper" id="toolbar">
-    <input type="file" id="imageUpload" accept="image/*" />
     <button id="brushBtn">✏️ Brush</button>
     <input type="range" id="brushSize" min="2" max="40" value="10">
     <button id="eraserBtn">🧽 Eraser</button>
@@ -21,42 +18,19 @@
     <button id="undoBtn">↩️ Undo</button>
     <button id="redoBtn">↪️ Redo</button>
     <button id="saveBtn">💾 Save</button>
+    <button id="loadBtn">📥 Load</button>
     <button id="downloadBtn">📸 Download</button>
-    <a href="index.html" class="backBtn">⬅ Back</a>
+    <button id="uploadBtn">🖼️ Upload</button>
+    <button id="musicToggle">🎵 Music</button>
   </div>
-
   <div class="zoom-container">
-    <canvas id="bgCanvas"></canvas>
-    <canvas id="drawingCanvas"></canvas>
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="drawingCanvas"></canvas>
   </div>
-
+  <audio id="bgMusic" loop autoplay muted>
+    <source src="sounds/music.mp3" type="audio/mpeg">
+  </audio>
   <script src="js/script.js"></script>
-  <script>
-    const bgCanvas = document.getElementById('bgCanvas');
-    const ctx = bgCanvas.getContext('2d');
-    const uploadInput = document.getElementById('imageUpload');
-
-    function resizeCanvas() {
-      bgCanvas.width = window.innerWidth;
-      bgCanvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    uploadInput.addEventListener('change', function () {
-      const file = this.files[0];
-      if (!file) return;
-      const img = new Image();
-      img.onload = function () {
-        ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        const scale = Math.min(bgCanvas.width / img.width, bgCanvas.height / img.height);
-        const x = (bgCanvas.width - img.width * scale) / 2;
-        const y = (bgCanvas.height - img.height * scale) / 2;
-        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-      };
-      img.src = URL.createObjectURL(file);
-    });
-  </script>
 </body>
 </html>
+
