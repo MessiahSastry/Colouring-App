@@ -1,4 +1,3 @@
-
 html, body {
   margin: 0;
   padding: 0;
@@ -94,5 +93,35 @@ button, input, a {
 #downloadBtn { background: #fdcb6e; }
 #uploadBtn { background: #dfe6e9; }
 #musicToggle { background: #b2bec3; }
+
+/* Full-Screen Button */
+#fullscreenBtn {
+  background: #ff6347;
+  color: white;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 10px;
+  transition: background 0.3s ease;
+}
+
+#fullscreenBtn:hover {
+  background: #e74c3c;
+}
+
+/* Full-Screen Mode Styles */
+:fullscreen #bgCanvas, :fullscreen #drawingCanvas {
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  transform: none;
+}
+
+:fullscreen body {
+  overflow: hidden;
+}
+
 
 
