@@ -63,7 +63,7 @@ canvas.addEventListener('mousemove', e => {
   if (!isDrawing) return;
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor;
+  ctx.strokeStyle = selectedColor;
   ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
