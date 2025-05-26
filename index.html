@@ -26,15 +26,15 @@
 
     /* Video Background */
     video.background-video {
-      position: absolute;
+      position: fixed;   /* Fix the video to stay in place */
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* This makes the video cover the entire screen */
-      z-index: -1; /* Ensures that the video stays behind other elements */
+      object-fit: cover; /* Ensure the video covers the entire screen */
+      z-index: -1;       /* Keep the video behind other elements */
     }
-
+    
     .blob {
       position: absolute;
       width: 500px;
