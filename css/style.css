@@ -1,0 +1,98 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Comic Sans MS', cursive;
+  touch-action: none; /* Disable zoom on entire page */
+}
+
+.zoom-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pinch-zoom;
+  position: absolute;
+  z-index: 1;
+}
+
+/* Canvas should zoom */
+#bgCanvas, #drawingCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* Prevent toolbar/buttons from zooming */
+.school-title,
+.toolbar-wrapper,
+.toolbar-toggle,
+.backBtn {
+  position: fixed !important;
+  transform: none !important;
+  z-index: 9999;
+}
+
+/* Title */
+.school-title {
+  font-size: 30px;
+  text-align: center;
+  padding: 10px 0 5px;
+  font-weight: bold;
+  width: 100%;
+  background: transparent;
+}
+
+/* Toolbar toggle button */
+.toolbar-toggle {
+  font-size: 20px;
+  padding: 4px 8px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border-radius: 50%;
+  background: #6c5ce7;
+  color: white;
+  top: 45px;
+  left: 10px;
+}
+
+/* Toolbar */
+.toolbar-wrapper {
+  top: 90px;
+  left: 0;
+  bottom: 0;
+  width: 130px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 0 12px 12px 0;
+}
+.toolbar-wrapper.hide {
+  display: none;
+}
+
+/* Buttons */
+button, input, a {
+  font-size: 14px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+}
+#brushBtn { background: #55efc4; }
+#eraserBtn { background: #fab1a0; }
+#colorPicker { background: #ffeaa7; }
+#undoBtn { background: #a29bfe; }
+#redoBtn { background: #fbc531; }
+#saveBtn { background: #74b9ff; }
+#loadBtn { background: #81ecec; }
+#downloadBtn { background: #fdcb6e; }
+#uploadBtn { background: #dfe6e9; }
+#musicToggle { background: #b2bec3; }
+.backBtn { background: #636e72; color: white; text-align: center; width: 100%; }
