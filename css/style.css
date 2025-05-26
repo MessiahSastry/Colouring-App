@@ -38,15 +38,6 @@ video.background-video {
 }
 
 /* School Title */
-.school-title,
-.toolbar-wrapper,
-.toolbar-toggle,
-.backBtn {
-  position: fixed;
-  transform: none !important;
-  z-index: 9999;
-}
-
 .school-title {
   font-size: 30px;
   text-align: center;
@@ -54,6 +45,22 @@ video.background-video {
   font-weight: bold;
   width: 100%;
   background: transparent;
+  color: #2c3e50;  /* Darker text color for contrast */
+}
+
+.school-title h1 {
+  font-size: 42px;
+  letter-spacing: 1px;
+  margin-bottom: 5px;  /* Reduced margin between title and subtitle */
+  color: #34495e;  /* Darker color for the main heading */
+}
+
+.school-title h2 {
+  font-size: 22px;
+  margin: 0;  /* Removed margin to reduce space */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7f8c8d;  /* Light grey for subheadings */
 }
 
 .toolbar-toggle {
