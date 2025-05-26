@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Coloring Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -14,7 +15,7 @@
     <input type="range" id="brushSize" min="2" max="40" value="10">
     <button id="eraserBtn">🧽 Eraser</button>
     <input type="range" id="eraserSize" min="2" max="40" value="10">
-    <input type="color" id="colorPicker" value="#ff0000">
+    <div id="colorPickerWheel"></div>
     <button id="undoBtn">↩️ Undo</button>
     <button id="redoBtn">↪️ Redo</button>
     <button id="saveBtn">💾 Save</button>
@@ -31,5 +32,18 @@
     <source src="sounds/music.mp3" type="audio/mpeg">
   </audio>
   <script src="js/script.js"></script>
+  <script>
+  let selectedColor = "#ff0000";
+
+  var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
+    width: 100,
+    color: selectedColor
+  });
+
+  colorPicker.on("color:change", function(color) {
+    selectedColor = color.hexString;
+    // Use this selectedColor in your drawing logic
+  });
+</script>
 </body>
 </html>
