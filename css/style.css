@@ -1,0 +1,41 @@
+
+body {
+  margin: 0;
+  font-family: 'Comic Sans MS', cursive;
+  background: #f0f8ff;
+}
+h1 {
+  text-align: center;
+  color: #336699;
+}
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+.image-grid img {
+  width: 150px;
+  height: auto;
+  border: 5px solid #ccc;
+  border-radius: 15px;
+  transition: transform 0.2s;
+}
+.image-grid img:hover {
+  transform: scale(1.1);
+}
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #ffffffdd;
+  padding: 10px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+canvas {
+  display: block;
+}
