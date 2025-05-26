@@ -1,6 +1,0 @@
-body { margin: 0; font-family: sans-serif; overflow: hidden; background: #fdf6e3; }
-h1 { text-align: center; }
-.image-selection img { width: 150px; margin: 10px; border: 2px solid #ccc; border-radius: 10px; }
-.toolbar { position: fixed; top: 10px; left: 10px; background: #fff8; padding: 10px; border-radius: 10px; z-index: 1000; }
-.toolbar button, .toolbar input { display: block; margin: 5px 0; }
-canvas { position: absolute; top: 0; left: 0; z-index: 0; }
