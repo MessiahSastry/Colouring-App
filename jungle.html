@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jungle</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <audio id="voice" src="audio/jungle_instructions.mp3" autoplay></audio>
+  <audio id="bg-music" src="audio/background.mp3" loop autoplay></audio>
+  <div class="toolbar" id="toolbar">
+    <label>Brush Size: <input type="range" id="brushSize" min="1" max="50" value="10"></label>
+    <label>Eraser Size: <input type="range" id="eraserSize" min="1" max="50" value="10"></label>
+    <input type="color" id="colorPicker">
+    <button onclick="setTool('brush')">Brush</button>
+    <button onclick="setTool('eraser')">Eraser</button>
+    <button onclick="toggleToolbar()">Toggle Toolbar</button>
+    <button onclick="saveDrawing()">Save</button>
+    <button onclick="downloadDrawing()">Download</button>
+  </div>
+  <canvas id="canvas"></canvas>
+  <img id="bgImage" src="images/Jungle.png" style="display:none;">
+  <script src="js/coloring.js"></script>
+</body>
+</html>
