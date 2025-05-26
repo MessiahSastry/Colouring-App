@@ -96,11 +96,16 @@ button, input, a {
 #uploadBtn { background: #dfe6e9; }
 #musicToggle { background: #b2bec3; }
 .backBtn {
+  position: fixed;
+  bottom: 20px;
+  left: 10px;
+  width: auto;
   background: #636e72;
   color: white;
   text-align: center;
-  padding: 8px 10px;
-  border: none;
+  padding: 10px 16px;
   border-radius: 10px;
-  cursor: pointer;
+  text-decoration: none;
+  font-size: 16px;
+  z-index: 9999;
 }
