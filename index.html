@@ -35,6 +35,7 @@
       z-index: -1;       /* Keep the video behind other elements */
     }
     
+    /* Floating blobs */
     .blob {
       position: absolute;
       width: 500px;
@@ -53,25 +54,30 @@
       100% { transform: translateY(-50px) translateX(50px); }
     }
 
+    /* Title Styling */
     .title {
       text-align: center;
-      color: white;
+      color: #2c3e50;  /* Darker color for contrast */
       z-index: 2;
     }
 
     .title h1 {
       font-size: 42px;
       letter-spacing: 1px;
-      margin-bottom: 10px;
+      margin-bottom: 5px;  /* Reduced margin between title and subtitle */
+      color: #2c3e50;  /* Darker color for the main heading */
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);  /* Added subtle shadow for contrast */
     }
 
     .title h2 {
       font-size: 22px;
-      margin: 5px 0;
+      margin: 0;  /* Removed margin to reduce space */
       text-transform: uppercase;
       letter-spacing: 1px;
+      color: #7f8c8d;  /* Light grey for subheadings */
     }
 
+    /* Button Styling */
     .button-container {
       z-index: 2;
       margin-top: 30px;
@@ -99,14 +105,14 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
-    /* Add Flying Fairy Animation */
+    /* Flying Fairy Animation */
     .fairy {
       position: absolute;
       top: 30%;
       left: 10%;
       width: 50px;
       height: 50px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Fairy_Icon.svg') no-repeat center center;  /* Transparent Fairy Image */
+      background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Fairy_Icon.svg') no-repeat center center;
       background-size: contain;
       animation: fly 8s infinite linear;
     }
@@ -129,18 +135,21 @@
     <source src="videos/background-video.webm" type="video/webm">
   </video>
 
+  <!-- Floating blobs -->
   <div class="blob"></div>
   <div class="blob"></div>
 
   <!-- Add the flying fairy -->
   <div class="fairy"></div>
 
+  <!-- Title Section -->
   <div class="title">
     <h1>St. Patrick's</h1>
     <h2>IIT & NEET FOUNDATION</h2>
     <h2>School</h2>
   </div>
 
+  <!-- Button Container -->
   <div class="button-container">
     <a href="jungle.html"><button>🌳 Jungle</button></a>
     <a href="dinosaur.html"><button>🦕 Dinosaur</button></a>
@@ -151,4 +160,5 @@
   </div>
 </body>
 </html>
+
 
