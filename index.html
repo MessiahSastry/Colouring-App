@@ -1,118 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>St. Patrick's School</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&family=Orbitron:wght@500&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&display=swap" rel="stylesheet">
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
       font-family: 'Baloo Bhai 2', cursive;
-      background: linear-gradient(135deg, #1e1e2f, #2c2c54);
-      overflow: hidden;
-      color: white;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
+      justify-content: center;
+      background: linear-gradient(135deg, #8e44ad, #3498db);
+      overflow: hidden;
+      position: relative;
     }
 
-    .background-animation {
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background: url('https://www.transparenttextures.com/patterns/connected.png');
-      animation: slide 20s linear infinite;
-      z-index: 0;
-      opacity: 0.07;
+    .blob {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+      border-radius: 50%;
+      filter: blur(100px);
+      animation: float 20s ease-in-out infinite alternate;
     }
 
-    @keyframes slide {
-      0% { background-position: 0 0; }
-      100% { background-position: 1000px 1000px; }
+    .blob:nth-child(1) { top: 10%; left: -25%; animation-delay: 0s; }
+    .blob:nth-child(2) { bottom: 10%; right: -25%; animation-delay: 10s; }
+
+    @keyframes float {
+      0% { transform: translateY(0px) translateX(0px); }
+      100% { transform: translateY(-50px) translateX(50px); }
     }
 
-    .title-container {
-      margin-top: 40px;
-      z-index: 2;
+    .title {
       text-align: center;
+      color: white;
+      z-index: 2;
     }
 
-    .title-container h1 {
+    .title h1 {
       font-size: 42px;
-      color: #fff;
       letter-spacing: 1px;
-      background: linear-gradient(90deg, #ff6ec4, #7873f5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 10px;
     }
 
-    .title-container h2 {
-      font-size: 20px;
-      margin-top: 5px;
-      font-weight: normal;
-      color: #d1d1d1;
+    .title h2 {
+      font-size: 22px;
+      margin: 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .button-grid {
+    .button-container {
+      z-index: 2;
+      margin-top: 30px;
       display: flex;
       flex-direction: column;
       gap: 16px;
-      margin-top: 40px;
       width: 90%;
       max-width: 320px;
-      z-index: 2;
     }
 
-    .button-grid a button {
+    .button-container a button {
       padding: 15px;
       font-size: 18px;
       border: none;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #7f00ff, #e100ff);
+      border-radius: 12px;
       color: white;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(255, 0, 255, 0.2);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      font-family: 'Baloo Bhai 2', cursive;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      transition: 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
 
-    .button-grid a button:hover {
+    .button-container a button:hover {
       transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(255, 0, 255, 0.4);
-    }
-
-    footer {
-      position: absolute;
-      bottom: 10px;
-      font-size: 12px;
-      color: #aaa;
-      z-index: 2;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
 <body>
+  <div class="blob"></div>
+  <div class="blob"></div>
 
-  <div class="background-animation"></div>
-
-  <div class="title-container">
+  <div class="title">
     <h1>St. Patrick's</h1>
     <h2>IIT & NEET FOUNDATION</h2>
     <h2>School</h2>
   </div>
 
-  <div class="button-grid">
+  <div class="button-container">
     <a href="jungle.html"><button>🌳 Jungle</button></a>
     <a href="dinosaur.html"><button>🦕 Dinosaur</button></a>
     <a href="garden.html"><button>🌸 Garden</button></a>
@@ -120,8 +107,5 @@
     <a href="ocean.html"><button>🌊 Ocean</button></a>
     <a href="upload.html"><button>📷 Upload Your Picture</button></a>
   </div>
-
-  <footer>© 2025 St. Patrick's School</footer>
 </body>
 </html>
-
