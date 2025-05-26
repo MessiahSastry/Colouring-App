@@ -53,6 +53,7 @@ video.background-video {
   letter-spacing: 1px;
   margin-bottom: 5px;  /* Reduced margin between title and subtitle */
   color: #34495e;  /* Darker color for the main heading */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);  /* Added subtle shadow for contrast */
 }
 
 .school-title h2 {
