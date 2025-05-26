@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Garden</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="school-title">🏫 St. Patrick's School</div>
+  <button id="toggleToolbar" class="toolbar-toggle">⇋</button>
+  <div class="toolbar-wrapper" id="toolbar">
+    <button id="brushBtn">✏️ Brush</button>
+    <input type="range" id="brushSize" min="2" max="40" value="10">
+    <button id="eraserBtn">🧽 Eraser</button>
+    <input type="range" id="eraserSize" min="2" max="40" value="10">
+    <input type="color" id="colorPicker" value="#ff0000">
+    <button id="undoBtn">↩️ Undo</button>
+    <button id="redoBtn">↪️ Redo</button>
+    <button id="saveBtn">💾 Save</button>
+    <button id="loadBtn">📥 Load</button>
+    <button id="downloadBtn">📸 Download</button>
+    <button id="uploadBtn">🖼️ Upload</button>
+    <button id="musicToggle">🎵 Music</button>
+    <a href="index.html" class="backBtn">⬅ Back</a>
+  </div>
+  <canvas id="bgCanvas"></canvas>
+  <canvas id="drawingCanvas"></canvas>
+  <audio id="bgMusic" loop autoplay muted>
+    <source src="sounds/music.mp3" type="audio/mpeg">
+  </audio>
+  <script src="js/script.js"></script>
+</body>
+</html>
