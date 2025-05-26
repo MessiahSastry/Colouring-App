@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>St. Patrick's School</title>
+  <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&display=swap" rel="stylesheet">
   <style>
     * {
@@ -19,9 +20,19 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #8e44ad, #3498db);
       overflow: hidden;
       position: relative;
+    }
+
+    /* Video Background */
+    video.background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* This makes the video cover the entire screen */
+      z-index: -1; /* Ensures that the video stays behind other elements */
     }
 
     .blob {
@@ -107,9 +118,17 @@
       75% { transform: translate(200px, -50px); }
       100% { transform: translate(0, 0); }
     }
+
   </style>
 </head>
 <body>
+  <!-- Video Background -->
+  <video class="background-video" autoplay loop muted>
+    <source src="your-video-file.mp4" type="video/mp4">
+    <source src="your-video-file.ogv" type="video/ogv">
+    <source src="your-video-file.webm" type="video/webm">
+  </video>
+
   <div class="blob"></div>
   <div class="blob"></div>
 
@@ -132,4 +151,3 @@
   </div>
 </body>
 </html>
-
