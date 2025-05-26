@@ -3,97 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Choose a Picture</title>
+  <title>St. Patrick's School</title>
 
-  <!-- Google Font: Sergio Trendy -->
-  <link href="https://fonts.googleapis.com/css2?family=Sergio+Trendy&display=swap" rel="stylesheet">
-
-  <!-- Optional external stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background: #fdf6e3;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Baloo Bhai 2', cursive;
+      background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+      overflow: hidden;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
-      font-family: 'Sergio Trendy', cursive;
     }
 
-    .school-title {
-      font-size: 32px;
+    .background-animation {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url('https://www.transparenttextures.com/patterns/connected.png');
+      animation: slide 20s linear infinite;
+      z-index: 0;
+      opacity: 0.07;
+    }
+
+    @keyframes slide {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 1000px; }
+    }
+
+    .title-container {
+      margin-top: 40px;
+      z-index: 2;
       text-align: center;
-      font-weight: bold;
-      margin: 20px 0 5px;
     }
 
-    .school-sub {
+    .title-container h1 {
+      font-size: 42px;
+      color: #fff;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #ff6ec4, #7873f5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .title-container h2 {
       font-size: 20px;
-      text-align: center;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin: 0;
-    }
-
-    .school-sub:last-child {
-      font-size: 18px;
-      text-transform: none;
+      margin-top: 5px;
+      font-weight: normal;
+      color: #d1d1d1;
     }
 
     .button-grid {
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 16px;
       margin-top: 40px;
       width: 90%;
-      max-width: 300px;
+      max-width: 320px;
+      z-index: 2;
     }
 
     .button-grid a button {
       padding: 15px;
       font-size: 18px;
       border: none;
-      border-radius: 12px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #7f00ff, #e100ff);
       color: white;
       cursor: pointer;
-      width: 100%;
-      transition: transform 0.2s;
-      font-family: inherit;
+      box-shadow: 0 4px 15px rgba(255, 0, 255, 0.2);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-family: 'Baloo Bhai 2', cursive;
     }
 
     .button-grid a button:hover {
       transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 0, 255, 0.4);
     }
 
-    .jungle { background: #55efc4; }
-    .dino   { background: #fab1a0; }
-    .garden { background: #81ecec; }
-    .farm   { background: #fdcb6e; }
-    .ocean  { background: #74b9ff; }
-    .upload { background: #a29bfe; }
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      color: #aaa;
+      z-index: 2;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Colorful School Title -->
-  <div class="school-title">
-    <span style="color:hsl(0,90%,55%)">S</span><span style="color:hsl(30,90%,55%)">t</span><span style="color:hsl(60,90%,55%)">.</span><span style="color:hsl(90,90%,55%)"> </span><span style="color:hsl(120,90%,55%)">P</span><span style="color:hsl(150,90%,55%)">a</span><span style="color:hsl(180,90%,55%)">t</span><span style="color:hsl(210,90%,55%)">r</span><span style="color:hsl(240,90%,55%)">i</span><span style="color:hsl(270,90%,55%)">c</span><span style="color:hsl(300,90%,55%)">k</span><span style="color:hsl(330,90%,55%)">'</span><span style="color:hsl(0,90%,55%)">s</span>
-  </div>
-  <p class="school-sub">IIT & NEET FOUNDATION</p>
-  <p class="school-sub">School.</p>
+  <div class="background-animation"></div>
 
-  <!-- Button Grid -->
+  <div class="title-container">
+    <h1>St. Patrick's</h1>
+    <h2>IIT & NEET FOUNDATION</h2>
+    <h2>School</h2>
+  </div>
+
   <div class="button-grid">
-    <a href="jungle.html"><button class="jungle">🌳 Jungle</button></a>
-    <a href="dinosaur.html"><button class="dino">🦕 Dinosaur</button></a>
-    <a href="garden.html"><button class="garden">🌸 Garden</button></a>
-    <a href="farm.html"><button class="farm">🚜 Farm</button></a>
-    <a href="ocean.html"><button class="ocean">🌊 Ocean</button></a>
-    <a href="upload.html"><button class="upload">📷 Upload Your Picture</button></a>
+    <a href="jungle.html"><button>🌳 Jungle</button></a>
+    <a href="dinosaur.html"><button>🦕 Dinosaur</button></a>
+    <a href="garden.html"><button>🌸 Garden</button></a>
+    <a href="farm.html"><button>🚜 Farm</button></a>
+    <a href="ocean.html"><button>🌊 Ocean</button></a>
+    <a href="upload.html"><button>📷 Upload Your Picture</button></a>
   </div>
 
+  <footer>© 2025 St. Patrick's School</footer>
 </body>
 </html>
+
