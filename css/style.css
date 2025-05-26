@@ -94,4 +94,13 @@ button, input, a {
 #downloadBtn { background: #fdcb6e; }
 #uploadBtn { background: #dfe6e9; }
 #musicToggle { background: #b2bec3; }
-#backBtn {   background: #a29bfe; }
+.backBtn {   background: #636e72;
+  color: white;
+  text-align: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  width: 100%;
+  display: block;
+}
