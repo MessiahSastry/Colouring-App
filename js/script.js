@@ -5,18 +5,20 @@ const ctx = canvas.getContext('2d');
 
 // Resize canvas to fit the window and ensure the background is redrawn
 function resizeCanvas() {
-  bgCanvas.width = canvas.width = window.innerWidth;
-  bgCanvas.height = canvas.height = window.innerHeight;
-  console.log("Canvas resized:", bgCanvas.width, bgCanvas.height); // Debugging canvas size
-  drawBackground();  // Redraw background when resized
+  bgCanvas.width = window.innerWidth;
+  bgCanvas.height = window.innerHeight;
+  console.log("Canvas resized:", bgCanvas.width, bgCanvas.height); // Log resized canvas dimensions
+  
+  // Redraw the background image on canvas when resized
+  if (bgImage.complete) {
+    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height); // Clear before drawing
+    bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height); // Draw image
+  }
 }
 
 resizeCanvas();  // Initial resize on page load
 
-window.addEventListener("resize", () => {
-  resizeCanvas();
-  drawBackground();  // Redraw on resize
-});
+window.addEventListener("resize", resizeCanvas);  // Redraw on resize
 
 // Set the background image (using the full URL for testing)
 const bgImage = new Image();
@@ -26,15 +28,16 @@ bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
   console.log("Canvas size:", bgCanvas.width, bgCanvas.height); // Log canvas size
-
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear the canvas before drawing the new image
+  
+  // Clear the canvas before drawing the new image
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
 };
 
 // If the image is already cached (loaded), draw it immediately
 if (bgImage.complete) {
   console.log("Background image already loaded.");
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height); // Clear canvas before drawing
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw image
 }
 
