@@ -7,6 +7,7 @@ const ctx = canvas.getContext('2d');
 function resizeCanvas() {
   bgCanvas.width = canvas.width = window.innerWidth;
   bgCanvas.height = canvas.height = window.innerHeight;
+  console.log("Canvas resized:", bgCanvas.width, bgCanvas.height); // Debugging canvas size
   drawBackground();  // Redraw background when resized
 }
 
@@ -32,6 +33,7 @@ bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";
 
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
+  console.log("Canvas size:", bgCanvas.width, bgCanvas.height);  // Log the canvas size
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing the new image
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
 };
