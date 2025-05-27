@@ -3,25 +3,30 @@ const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
-// Resize the canvas to fit the window
+// Resize canvas to fit the window and ensure the background is redrawn
 function resizeCanvas() {
   bgCanvas.width = canvas.width = window.innerWidth;
   bgCanvas.height = canvas.height = window.innerHeight;
-  drawBackground();  // Redraw the background whenever resized
+  drawBackground();  // Redraw background when resized
 }
-resizeCanvas();
 
-// Event listener for window resizing
+resizeCanvas();  // Initial resize on page load
+
 window.addEventListener("resize", () => {
   resizeCanvas();
-  drawBackground();  // Redraw the background after resizing
+  drawBackground();  // Redraw on resize
 });
 
-// Default settings for history
+// Default drawing settings
+let isDrawing = false;
+let isErasing = false;
+let brushColor = "#ff0000";  // Default brush color
+let brushSize = 10;
+let eraserSize = 10;
 let history = [];
 let historyStep = -1;
 
-// Set the background image based on the current page URL
+// Set the background image based on the page URL
 const bgImage = new Image();
 const path = location.pathname.toLowerCase();  // Get the current page
 if (path.includes("jungle")) bgImage.src = "images/Jungle.png";
@@ -30,21 +35,20 @@ else if (path.includes("garden")) bgImage.src = "images/Garden.png";
 else if (path.includes("farm")) bgImage.src = "images/Farm.png";
 else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
 
-// Debug: Check the image path and ensure it loads correctly
+// Debug: Log the image source to ensure the right image is being used
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear the canvas before drawing the new image
-  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image onto the canvas
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing the new image
+  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
 };
 
-// Draw background image if already loaded
+// Check if the image is already loaded and draw it
 if (bgImage.complete) {
-  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image
-} else {
-  console.log("Background image not loaded yet");
+  console.log("Background image already loaded.");
+  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw image
 }
 
-// Handle canvas state management (for drawing)
+// Handle canvas drawing and touch events
 function saveState() {
   history = history.slice(0, historyStep + 1);
   history.push(canvas.toDataURL());
@@ -58,7 +62,7 @@ function restoreState(index) {
   img.src = history[index];
 }
 
-// Add mouse and touch events for drawing
+// Mouse events for drawing
 canvas.addEventListener('mousedown', e => {
   isDrawing = true;
   ctx.beginPath();
@@ -66,7 +70,7 @@ canvas.addEventListener('mousedown', e => {
 });
 canvas.addEventListener('mousemove', e => {
   if (!isDrawing) return;
-  ctx.lineWidth = brushSize;
+  ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
   ctx.strokeStyle = brushColor;
   ctx.lineTo(e.offsetX, e.offsetY);
@@ -74,41 +78,53 @@ canvas.addEventListener('mousemove', e => {
 });
 canvas.addEventListener('mouseup', () => { isDrawing = false; saveState(); });
 
-// Add touch events for mobile devices
+// Mobile touch events
 canvas.addEventListener('touchstart', e => {
   if (e.touches.length > 1) return;  // Prevent multi-touch
   const t = e.touches[0];
+  const touchX = t.clientX;
+  const touchY = t.clientY;
   ctx.beginPath();
-  ctx.moveTo(t.clientX, t.clientY);
+  ctx.moveTo(touchX, touchY);
   isDrawing = true;
 });
 canvas.addEventListener('touchmove', e => {
-  if (e.touches.length > 1) return;
+  if (e.touches.length > 1) return;  // Prevent multi-touch
   if (!isDrawing) return;
   const t = e.touches[0];
-  ctx.lineWidth = brushSize;
+  const touchX = t.clientX;
+  const touchY = t.clientY;
+  ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = brushColor;
-  ctx.lineTo(t.clientX, t.clientY);
+  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor;
+  ctx.lineTo(touchX, touchY);
   ctx.stroke();
   e.preventDefault();
 });
-canvas.addEventListener('touchend', () => { if (isDrawing) { isDrawing = false; saveState(); } });
+canvas.addEventListener('touchend', () => {
+  if (!isDrawing) return;
+  isDrawing = false;
+  saveState();
+});
 
-// Initialize brush and eraser toggle
-document.getElementById('brushBtn').onclick = () => { isErasing = false; };
-document.getElementById('eraserBtn').onclick = () => { isErasing = true; };
+// Brush and Eraser toggle functionality
+document.getElementById('brushBtn').onclick = () => {
+  isErasing = false;
+};
+document.getElementById('eraserBtn').onclick = () => {
+  isErasing = true;
+};
 
 // Handle color picker and size inputs
-const colorPicker = new iro.ColorPicker("#colorPickerWheel", {
+var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
   width: 100,
   color: brushColor
 });
 colorPicker.on("color:change", function(color) {
-  brushColor = color.hexString;  // Update brush color when the color is changed
+  brushColor = color.hexString;  // Update brush color when color is changed
 });
 
-// Handle brush size
+// Brush and Eraser size functionality
 document.getElementById('brushSize').oninput = e => brushSize = e.target.value;
 document.getElementById('eraserSize').oninput = e => eraserSize = e.target.value;
 
@@ -158,7 +174,7 @@ document.getElementById('uploadBtn').onclick = () => {
   input.click();
 };
 
-// Music toggle functionality
+// Music Toggle functionality
 document.getElementById('musicToggle').onclick = () => {
   const music = document.getElementById('bgMusic');
   music.muted = false;
