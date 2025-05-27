@@ -3,162 +3,75 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>St. Patrick's School</title>
+  <title>Coloring Page</title>
   <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Baloo Bhai 2', cursive;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Video Background */
-    video.background-video {
-      position: fixed;   /* Fix the video to stay in place */
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Ensure the video covers the entire screen */
-      z-index: -1;       /* Keep the video behind other elements */
-    }
-    
-    /* Floating blobs */
-    .blob {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
-      border-radius: 50%;
-      filter: blur(100px);
-      animation: float 20s ease-in-out infinite alternate;
-    }
-
-    .blob:nth-child(1) { top: 10%; left: -25%; animation-delay: 0s; }
-    .blob:nth-child(2) { bottom: 10%; right: -25%; animation-delay: 10s; }
-
-    @keyframes float {
-      0% { transform: translateY(0px) translateX(0px); }
-      100% { transform: translateY(-50px) translateX(50px); }
-    }
-
-    /* Title Styling */
-    .title {
-      text-align: center;
-      color: #2c3e50;  /* Darker color for contrast */
-      z-index: 2;
-    }
-
-    .title h1 {
-      font-size: 42px;
-      letter-spacing: 1px;
-      margin-bottom: 5px;  /* Reduced margin between title and subtitle */
-      color: #2c3e50;  /* Darker color for the main heading */
-      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);  /* Added subtle shadow for contrast */
-    }
-
-    .title h2 {
-      font-size: 22px;
-      margin: 0;  /* Removed margin to reduce space */
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #7f8c8d;  /* Light grey for subheadings */
-    }
-
-    /* Button Styling */
-    .button-container {
-      z-index: 2;
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      width: 90%;
-      max-width: 320px;
-    }
-
-    .button-container a button {
-      padding: 15px;
-      font-size: 18px;
-      border: none;
-      border-radius: 12px;
-      color: white;
-      cursor: pointer;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      transition: 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .button-container a button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Flying Fairy Animation */
-    .fairy {
-      position: absolute;
-      top: 30%;
-      left: 10%;
-      width: 50px;
-      height: 50px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Fairy_Icon.svg') no-repeat center center;
-      background-size: contain;
-      animation: fly 8s infinite linear;
-    }
-
-    @keyframes fly {
-      0% { transform: translate(0, 0); }
-      25% { transform: translate(200px, 50px); }
-      50% { transform: translate(400px, 0); }
-      75% { transform: translate(200px, -50px); }
-      100% { transform: translate(0, 0); }
-    }
-
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Video Background -->
-  <video class="background-video" autoplay loop muted>
-    <source src="videos/background-video.mp4" type="video/mp4">
-    <source src="videos/background-video.ogv" type="video/ogv">
-    <source src="videos/background-video.webm" type="video/webm">
-  </video>
-
-  <!-- Floating blobs -->
-  <div class="blob"></div>
-  <div class="blob"></div>
-
-  <!-- Add the flying fairy -->
-  <div class="fairy"></div>
-
-  <!-- Title Section -->
-  <div class="title">
-    <h1>St. Patrick's</h1>
-    <h2>IIT & NEET FOUNDATION</h2>
-    <h2>School</h2>
+  <div class="school-title">
+    <span style="color:hsl(0, 90%, 55%)">S</span><span style="color:hsl(30, 90%, 55%)">t</span><span style="color:hsl(60, 90%, 55%)">.</span><span style="color:hsl(90, 90%, 55%)"> </span><span style="color:hsl(120, 90%, 55%)">P</span><span style="color:hsl(150, 90%, 55%)">a</span><span style="color:hsl(180, 90%, 55%)">t</span><span style="color:hsl(210, 90%, 55%)">r</span><span style="color:hsl(240, 90%, 55%)">i</span><span style="color:hsl(270, 90%, 55%)">c</span><span style="color:hsl(300, 90%, 55%)">k</span><span style="color:hsl(330, 90%, 55%)">'</span><span style="color:hsl(0, 90%, 55%)">s</span><span style="color:hsl(30, 90%, 55%)"> </span><span style="color:hsl(60, 90%, 55%)">S</span><span style="color:hsl(90, 90%, 55%)">c</span><span style="color:hsl(120, 90%, 55%)">h</span><span style="color:hsl(150, 90%, 55%)">o</span><span style="color:hsl(180, 90%, 55%)">o</span><span style="color:hsl(210, 90%, 55%)">l</span>
   </div>
 
-  <!-- Button Container -->
-  <div class="button-container">
-    <a href="jungle.html"><button>🌳 Jungle</button></a>
-    <a href="dinosaur.html"><button>🦕 Dinosaur</button></a>
-    <a href="garden.html"><button>🌸 Garden</button></a>
-    <a href="farm.html"><button>🚜 Farm</button></a>
-    <a href="ocean.html"><button>🌊 Ocean</button></a>
-    <a href="upload.html"><button>📷 Upload Your Picture</button></a>
+  <button id="toggleToolbar" class="toolbar-toggle">⇋</button>
+
+  <div class="toolbar-wrapper" id="toolbar">
+    <button id="brushBtn">✏️ Brush</button>
+    <input type="range" id="brushSize" min="2" max="40" value="10">
+    <button id="eraserBtn">🧽 Eraser</button>
+    <input type="range" id="eraserSize" min="2" max="40" value="10">
+    <div id="colorPickerWheel"></div>
+    <button id="undoBtn">↩️ Undo</button>
+    <button id="redoBtn">↪️ Redo</button>
+    <button id="saveBtn">💾 Save</button>
+    <button id="loadBtn">📥 Load</button>
+    <button id="downloadBtn">📸 Download</button>
+    <button id="uploadBtn">🖼️ Upload</button>
+    <button id="musicToggle">🎵 Music</button>
+    <!-- Full-Screen Button -->
+    <button id="fullscreenBtn">🌐 Full-Screen</button>
   </div>
+
+  <div class="zoom-container">
+    <canvas id="bgCanvas"></canvas>
+    <canvas id="drawingCanvas"></canvas>
+  </div>
+
+  <audio id="bgMusic" loop autoplay muted>
+    <source src="sounds/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="js/script.js"></script>
+
+  <script>
+    let selectedColor = "#ff0000"; // Default color for the brush
+
+    var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
+      width: 100, // Size of the color picker
+      color: selectedColor // Set the initial color to red
+    });
+
+    colorPicker.on("color:change", function(color) {
+      selectedColor = color.hexString; // Update the brush color to the selected color
+    });
+
+    // Brush button functionality
+    document.getElementById('brushBtn').onclick = () => {
+      isErasing = false; // Set to brush mode
+    };
+
+    // Eraser button functionality
+    document.getElementById('eraserBtn').onclick = () => {
+      isErasing = true; // Set to eraser mode
+    };
+
+    // Fullscreen toggle functionality
+    document.getElementById('fullscreenBtn').onclick = function() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    };
+  </script>
 </body>
 </html>
-
-
