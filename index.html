@@ -1,77 +1,130 @@
-<!-- Inside <head>, after your existing <link rel="stylesheet"> and before </head>: -->
-<style>
-  .school-title {
-    font-family: 'Baloo Bhai 2', cursive;
-    font-weight: 700;
-    text-align: center;
-    margin-top: 35px;
-    margin-bottom: 45px; /* more space below title */
-    font-size: 30px;
-    z-index: 3;
-    position: relative;
-  }
-  .school-title h1 {
-    font-size: 38px;
-    margin-bottom: 3px;
-  }
-  .school-title h2 {
-    font-size: 20px;
-    margin: 0;
-  }
-  .button-container {
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-    max-width: 260px;
-    margin: 0 auto; /* center horizontally */
-    align-items: center;
-    justify-content: center;
-  }
-  .button-container a {
-    text-decoration: none !important;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-  .button-container a button {
-    padding: 13px 0;
-    font-size: 20px;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    cursor: pointer;
-    background: linear-gradient(135deg, #00c6ff, #0072ff);
-    transition: 0.3s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    font-family: 'Baloo Bhai 2', cursive;
-    font-weight: 700;
-    text-decoration: none !important;
-    outline: none;
-    width: 220px;
-    margin: 0;
-  }
-  .button-container a button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-  }
-  @media (max-width: 480px) {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>St. Patrick's School</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
     .school-title {
-      font-size: 22px !important;
-      margin-bottom: 24px;
-      margin-top: 20px;
+      font-family: 'Baloo Bhai 2', cursive;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 35px;
+      margin-bottom: 45px;
+      font-size: 30px;
+      z-index: 3;
+      position: relative;
     }
     .school-title h1 {
-      font-size: 28px;
+      font-size: 38px;
+      margin-bottom: 3px;
     }
     .school-title h2 {
-      font-size: 15px;
+      font-size: 20px;
+      margin: 0;
+    }
+    .button-container {
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .button-container a {
+      text-decoration: none !important;
+      width: 100%;
+      display: flex;
+      justify-content: center;
     }
     .button-container a button {
-      font-size: 16px;
-      width: 150px;
-      padding: 10px 0;
+      padding: 13px 0;
+      font-size: 20px;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      transition: 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      font-family: 'Baloo Bhai 2', cursive;
+      font-weight: 700;
+      text-decoration: none !important;
+      outline: none;
+      width: 220px;
+      margin: 0;
     }
-  }
-</style>
+    .button-container a button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .fairy {
+      position: absolute;
+      top: 30%;
+      left: 10%;
+      width: 50px;
+      height: 50px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/5/5f/Fairy_Icon.svg') no-repeat center center;
+      background-size: contain;
+      animation: fly 8s infinite linear;
+      z-index: 5;
+    }
+    @keyframes fly {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(200px, 50px); }
+      50% { transform: translate(400px, 0); }
+      75% { transform: translate(200px, -50px); }
+      100% { transform: translate(0, 0); }
+    }
+    @media (max-width: 480px) {
+      .school-title {
+        font-size: 22px !important;
+        margin-bottom: 24px;
+        margin-top: 20px;
+      }
+      .school-title h1 {
+        font-size: 28px;
+      }
+      .school-title h2 {
+        font-size: 15px;
+      }
+      .button-container a button {
+        font-size: 16px;
+        width: 150px;
+        padding: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Video Background -->
+  <video class="background-video" autoplay loop muted>
+    <source src="videos/background-video.mp4" type="video/mp4">
+    <source src="videos/background-video.ogv" type="video/ogv">
+    <source src="videos/background-video.webm" type="video/webm">
+  </video>
+
+  <div class="fairy"></div>
+
+  <div class="school-title">
+    <h1>St. Patrick's</h1>
+    <h2>IIT & NEET FOUNDATION</h2>
+    <h2>SCHOOL</h2>
+  </div>
+
+  <div class="button-container">
+    <a href="jungle.html"><button>🌳 Jungle</button></a>
+    <a href="dinosaur.html"><button>🦕 Dinosaur</button></a>
+    <a href="garden.html"><button>🌸 Garden</button></a>
+    <a href="farm.html"><button>🚜 Farm</button></a>
+    <a href="ocean.html"><button>🌊 Ocean</button></a>
+    <a href="upload.html"><button>📷 Upload Your Picture</button></a>
+  </div>
+</body>
+</html>
