@@ -26,16 +26,10 @@ let eraserSize = 10;
 let history = [];
 let historyStep = -1;
 
-// Set the background image based on the page URL
+// Set the background image based on the page URL (using full URL for testing)
 const bgImage = new Image();
-const path = location.pathname.toLowerCase();  // Get the current page
-if (path.includes("jungle")) bgImage.src = "images/Jungle.png";
-else if (path.includes("dinosaur")) bgImage.src = "images/Dinosaur.png";
-else if (path.includes("garden")) bgImage.src = "images/Garden.png";
-else if (path.includes("farm")) bgImage.src = "images/Farm.png";
-else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
+bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";  // Full URL for testing
 
-// Check if the image is already loaded and draw it
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing the new image
