@@ -34,7 +34,7 @@ window.addEventListener('resize', resizeCanvas);
 
 // --------- Pinch/Zoom/Pan Drawing Helpers ----------
 function drawAll() {
-  // Clear and redraw BG
+  // Draw outline on bgCanvas
   bgCtx.setTransform(1,0,0,1,0,0);
   bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);
   bgCtx.save();
@@ -49,7 +49,7 @@ function drawAll() {
   }
   bgCtx.restore();
 
-  // Clear and redraw drawing
+  // Draw user's drawing on drawingCanvas
   ctx.setTransform(1,0,0,1,0,0);
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save();
@@ -115,7 +115,6 @@ canvas.addEventListener('touchend', function(e) {
 // --- Mouse for desktop panning/zooming (optional, scroll to zoom) ---
 canvas.addEventListener('wheel', function(e){
   e.preventDefault();
-  // Zoom about mouse point
   let scaleAmount = e.deltaY < 0 ? 1.1 : 0.9;
   let newScale = Math.min(3, Math.max(1, scale * scaleAmount));
   let mx = e.offsetX, my = e.offsetY;
@@ -236,13 +235,21 @@ function draw(e) {
   ctx.scale(scale, scale);
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  ctx.strokeStyle = isErasing ? "#fff" : brushColor;
-  ctx.lineWidth = isErasing ? eraserSize : brushSize;
+  if (isErasing) {
+    ctx.globalCompositeOperation = "destination-out"; // Erase only drawing, not outline
+    ctx.strokeStyle = "rgba(0,0,0,1)";
+    ctx.lineWidth = eraserSize;
+  } else {
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = brushColor;
+    ctx.lineWidth = brushSize;
+  }
   ctx.lineTo(x, y);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.restore();
+
   [lastX, lastY] = [x, y];
 }
 
@@ -252,7 +259,6 @@ canvas.addEventListener('mouseout', endDraw);
 
 // --------- Undo/Redo/Save/Load/Download ---------
 function saveState() {
-  // Save the drawn area as a dataURL (in transformed coordinates)
   ctx.save();
   ctx.setTransform(1,0,0,1,0,0);
   let data = canvas.toDataURL();
@@ -353,4 +359,3 @@ window.onload = () => {
 if (location.pathname.toLowerCase().includes("upload")) {
   currentBgDataURL = null;
 }
-
