@@ -15,6 +15,9 @@ let historyStep = -1;
 let currentBgDataURL = null;
 
 // --------- Pinch-to-Zoom and Pan State ---------
+let baseWidth = 1080, baseHeight = 1440; // Change if your outline image is a different size
+let minScale = 1;
+let maxScale = 3;
 let scale = 1, panX = 0, panY = 0;
 let lastScale = 1, lastPan = [0,0];
 let pinchStart = null;
@@ -23,34 +26,33 @@ let pinchMode = false;
 // The actual coloring "layer" for user drawing (off-screen canvas)
 let colorLayer = document.createElement('canvas');
 let colorCtx = colorLayer.getContext('2d');
+colorLayer.width = baseWidth;
+colorLayer.height = baseHeight;
 
-// --- Helper: set canvas sizes ---
+// --- Helper: set canvas sizes and update minScale ---
 function resizeCanvas() {
   const w = window.innerWidth;
   const h = window.innerHeight;
   bgCanvas.width = canvas.width = w;
   bgCanvas.height = canvas.height = h;
-  // colorLayer stays fixed at same size as main canvas
-  colorLayer.width = w;
-  colorLayer.height = h;
-  if (historyStep >= 0 && history[historyStep]) {
-    // On resize, redraw last history to colorLayer
-    let img = new Image();
-    img.onload = () => {
-      colorCtx.clearRect(0,0,w,h);
-      colorCtx.drawImage(img,0,0,w,h);
-      drawAll();
-    };
-    img.src = history[historyStep];
-  } else {
-    drawAll();
-  }
+  minScale = Math.max(w/baseWidth, h/baseHeight); // Never shrink smaller than fit
+  scale = Math.max(scale, minScale); // If current scale < min, bump up
+  centerIfNeeded();
+  drawAll();
 }
 window.addEventListener('resize', resizeCanvas);
 
+// --- Center image on initial load if not zoomed ---
+function centerIfNeeded() {
+  // Center so coloring is always visible on load/resize
+  let displayW = baseWidth * scale, displayH = baseHeight * scale;
+  if (displayW < bgCanvas.width) panX = (bgCanvas.width - displayW)/2;
+  if (displayH < bgCanvas.height) panY = (bgCanvas.height - displayH)/2;
+}
+
 // --------- Pinch/Zoom/Pan Drawing Helpers ----------
 function drawAll() {
-  // Draw outline on bgCanvas
+  // Draw outline on bgCanvas at base size, then transform to fit/pan/zoom
   bgCtx.setTransform(1,0,0,1,0,0);
   bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height);
   bgCtx.save();
@@ -58,20 +60,20 @@ function drawAll() {
   bgCtx.scale(scale, scale);
   if (currentBgDataURL) {
     let img = new Image();
-    img.onload = () => bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
+    img.onload = () => bgCtx.drawImage(img, 0, 0, baseWidth, baseHeight);
     img.src = currentBgDataURL;
   } else if (bgImage.src && (scene || bgImage.complete)) {
-    bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);
+    bgCtx.drawImage(bgImage, 0, 0, baseWidth, baseHeight);
   }
   bgCtx.restore();
 
-  // Draw user's drawing on drawingCanvas
+  // Draw user's drawing on drawingCanvas, same way
   ctx.setTransform(1,0,0,1,0,0);
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.save();
   ctx.translate(panX, panY);
   ctx.scale(scale, scale);
-  ctx.drawImage(colorLayer, 0, 0, colorLayer.width, colorLayer.height, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(colorLayer, 0, 0, baseWidth, baseHeight);
   ctx.restore();
 }
 
@@ -103,10 +105,10 @@ canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
     let newDist = distance(e.touches[0], e.touches[1]);
     let mp = midpoint(e.touches[0], e.touches[1]);
-    let newScale = Math.min(3, Math.max(1, lastScale * (newDist / pinchStart.distance)));
-    let dx = mp.x - pinchStart.midpoint.x;
-    let dy = mp.y - pinchStart.midpoint.y;
-    scale = newScale;
+    let newScale = lastScale * (newDist / pinchStart.distance);
+    scale = Math.max(minScale, Math.min(maxScale, newScale));
+    let dx = (mp.x - pinchStart.midpoint.x);
+    let dy = (mp.y - pinchStart.midpoint.y);
     panX = lastPan[0] + dx;
     panY = lastPan[1] + dy;
     drawAll();
@@ -126,11 +128,13 @@ canvas.addEventListener('touchend', function(e) {
 canvas.addEventListener('wheel', function(e){
   e.preventDefault();
   let scaleAmount = e.deltaY < 0 ? 1.1 : 0.9;
-  let newScale = Math.min(3, Math.max(1, scale * scaleAmount));
+  let newScale = scale * scaleAmount;
+  scale = Math.max(minScale, Math.min(maxScale, newScale));
   let mx = e.offsetX, my = e.offsetY;
-  panX = mx - (mx - panX) * (newScale/scale);
-  panY = my - (my - panY) * (newScale/scale);
-  scale = newScale;
+  // adjust pan so zoom is about cursor
+  panX = mx - (mx - panX) * (scale/lastScale);
+  panY = my - (my - panY) * (scale/lastScale);
+  lastScale = scale;
   drawAll();
 });
 canvas.addEventListener('mousedown', function(e){
@@ -206,7 +210,7 @@ function getXY(e) {
     x = e.clientX - rect.left;
     y = e.clientY - rect.top;
   }
-  // Map screen point to drawing coordinates
+  // Map screen point to drawing coordinates (relative to the coloring page, not screen)
   x = (x - panX) / scale;
   y = (y - panY) / scale;
   return [x, y];
