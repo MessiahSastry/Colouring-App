@@ -43,6 +43,7 @@ body {
   left: 50%;
   transform-origin: 0 0;
   transform: translate(-50%, -50%);
+  background: transparent; /* <--- NEW: ensures eraser/undo works perfectly */
 }
 
 /* School Title */
@@ -181,4 +182,16 @@ button, input, a {
   50% { transform: translate(400px, 0); }
   75% { transform: translate(200px, -50px); }
   100% { transform: translate(0, 0); }
+}
+
+/* Optional: Responsive for small screens */
+@media (max-width: 500px) {
+  .toolbar-wrapper {
+    width: 100px;
+    padding: 6px;
+    gap: 6px;
+  }
+  .school-title {
+    font-size: 20px;
+  }
 }
