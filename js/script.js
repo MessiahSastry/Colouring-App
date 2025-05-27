@@ -1,5 +1,3 @@
-// js/script.js
-
 // ---- DOM elements ----
 const bgCanvas = document.getElementById('bgCanvas');
 const canvas = document.getElementById('drawingCanvas');
@@ -22,13 +20,31 @@ let lastScale = 1, lastPan = [0,0];
 let pinchStart = null;
 let pinchMode = false;
 
+// The actual coloring "layer" for user drawing (off-screen canvas)
+let colorLayer = document.createElement('canvas');
+let colorCtx = colorLayer.getContext('2d');
+
 // --- Helper: set canvas sizes ---
 function resizeCanvas() {
   const w = window.innerWidth;
   const h = window.innerHeight;
   bgCanvas.width = canvas.width = w;
   bgCanvas.height = canvas.height = h;
-  drawAll();
+  // colorLayer stays fixed at same size as main canvas
+  colorLayer.width = w;
+  colorLayer.height = h;
+  if (historyStep >= 0 && history[historyStep]) {
+    // On resize, redraw last history to colorLayer
+    let img = new Image();
+    img.onload = () => {
+      colorCtx.clearRect(0,0,w,h);
+      colorCtx.drawImage(img,0,0,w,h);
+      drawAll();
+    };
+    img.src = history[historyStep];
+  } else {
+    drawAll();
+  }
 }
 window.addEventListener('resize', resizeCanvas);
 
@@ -55,11 +71,7 @@ function drawAll() {
   ctx.save();
   ctx.translate(panX, panY);
   ctx.scale(scale, scale);
-  if (historyStep >= 0 && history[historyStep]) {
-    let img = new Image();
-    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    img.src = history[historyStep];
-  }
+  ctx.drawImage(colorLayer, 0, 0, colorLayer.width, colorLayer.height, 0, 0, canvas.width, canvas.height);
   ctx.restore();
 }
 
@@ -91,9 +103,7 @@ canvas.addEventListener('touchmove', function(e) {
     e.preventDefault();
     let newDist = distance(e.touches[0], e.touches[1]);
     let mp = midpoint(e.touches[0], e.touches[1]);
-    // Scale
     let newScale = Math.min(3, Math.max(1, lastScale * (newDist / pinchStart.distance)));
-    // Pan
     let dx = mp.x - pinchStart.midpoint.x;
     let dy = mp.y - pinchStart.midpoint.y;
     scale = newScale;
@@ -206,51 +216,47 @@ function startDraw(e) {
   if (pinchMode) return;
   isDrawing = true;
   [lastX, lastY] = getXY(e);
-  ctx.save();
-  ctx.translate(panX, panY);
-  ctx.scale(scale, scale);
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.restore();
+  colorCtx.save();
+  colorCtx.beginPath();
+  colorCtx.moveTo(lastX, lastY);
+  colorCtx.restore();
   canvas.addEventListener('mousemove', draw);
 }
 function endDraw(e) {
   if (isDrawing) {
     isDrawing = false;
-    ctx.save();
-    ctx.translate(panX, panY);
-    ctx.scale(scale, scale);
-    ctx.closePath();
-    ctx.restore();
+    colorCtx.save();
+    colorCtx.closePath();
+    colorCtx.restore();
     saveState();
   }
   canvas.removeEventListener('mousemove', draw);
+  drawAll();
 }
 function draw(e) {
   if (!isDrawing || pinchMode) return;
   e.preventDefault && e.preventDefault();
   let [x, y] = getXY(e);
-  ctx.save();
-  ctx.translate(panX, panY);
-  ctx.scale(scale, scale);
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
+  colorCtx.save();
+  colorCtx.lineCap = "round";
+  colorCtx.lineJoin = "round";
   if (isErasing) {
-    ctx.globalCompositeOperation = "destination-out"; // Erase only drawing, not outline
-    ctx.strokeStyle = "rgba(0,0,0,1)";
-    ctx.lineWidth = eraserSize;
+    colorCtx.globalCompositeOperation = "destination-out";
+    colorCtx.strokeStyle = "rgba(0,0,0,1)";
+    colorCtx.lineWidth = eraserSize;
   } else {
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = brushColor;
-    ctx.lineWidth = brushSize;
+    colorCtx.globalCompositeOperation = "source-over";
+    colorCtx.strokeStyle = brushColor;
+    colorCtx.lineWidth = brushSize;
   }
-  ctx.lineTo(x, y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-  ctx.restore();
+  colorCtx.lineTo(x, y);
+  colorCtx.stroke();
+  colorCtx.beginPath();
+  colorCtx.moveTo(x, y);
+  colorCtx.restore();
 
   [lastX, lastY] = [x, y];
+  drawAll();
 }
 
 canvas.addEventListener('mousedown', startDraw);
@@ -259,24 +265,20 @@ canvas.addEventListener('mouseout', endDraw);
 
 // --------- Undo/Redo/Save/Load/Download ---------
 function saveState() {
-  ctx.save();
-  ctx.setTransform(1,0,0,1,0,0);
-  let data = canvas.toDataURL();
-  ctx.restore();
+  let data = colorLayer.toDataURL();
   history = history.slice(0, historyStep + 1);
   history.push(data);
   historyStep++;
 }
 function restoreState(index) {
-  drawAll();
   if (history[index]) {
-    ctx.save();
-    ctx.translate(panX, panY);
-    ctx.scale(scale, scale);
     let img = new Image();
-    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    img.onload = () => {
+      colorCtx.clearRect(0, 0, colorLayer.width, colorLayer.height);
+      colorCtx.drawImage(img, 0, 0, colorLayer.width, colorLayer.height);
+      drawAll();
+    };
     img.src = history[index];
-    ctx.restore();
   }
 }
 
@@ -286,28 +288,23 @@ if (undoBtn) undoBtn.onclick = () => {
 if (redoBtn) redoBtn.onclick = () => {
   if (historyStep < history.length - 1) { historyStep++; restoreState(historyStep);}
 };
-if (saveBtn) saveBtn.onclick = () => { localStorage.setItem(location.pathname, canvas.toDataURL()); };
+if (saveBtn) saveBtn.onclick = () => { localStorage.setItem(location.pathname, colorLayer.toDataURL()); };
 if (loadBtn) loadBtn.onclick = () => {
   let data = localStorage.getItem(location.pathname);
   if (data) {
     let img = new Image();
     img.src = data;
     img.onload = () => {
-      ctx.save();
-      ctx.translate(panX, panY);
-      ctx.scale(scale, scale);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      ctx.restore();
+      colorCtx.clearRect(0, 0, colorLayer.width, colorLayer.height);
+      colorCtx.drawImage(img, 0, 0, colorLayer.width, colorLayer.height);
+      drawAll();
     }
   }
 };
 if (downloadBtn) downloadBtn.onclick = () => {
   const link = document.createElement('a');
   link.download = 'drawing.png';
-  ctx.save();
-  ctx.setTransform(1,0,0,1,0,0);
-  link.href = canvas.toDataURL();
-  ctx.restore();
+  link.href = colorLayer.toDataURL();
   link.click();
 };
 
