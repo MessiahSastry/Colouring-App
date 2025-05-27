@@ -3,14 +3,6 @@ const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
-// Check if the canvas contexts are correctly initialized
-if (!bgCtx) {
-  console.error("Failed to get 2d context for bgCanvas");
-}
-if (!ctx) {
-  console.error("Failed to get 2d context for drawingCanvas");
-}
-
 // Resize canvas to fit the window and ensure the background is redrawn
 function resizeCanvas() {
   bgCanvas.width = canvas.width = window.innerWidth;
@@ -26,11 +18,31 @@ window.addEventListener("resize", () => {
   drawBackground();  // Redraw on resize
 });
 
-// Test: Draw a simple color instead of an image
-function drawBackground() {
-  bgCtx.fillStyle = "#ff6347"; // Set a solid color (e.g., tomato red)
-  bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height); // Draw the color on the canvas
+// Set the background image (using the full URL for testing)
+const bgImage = new Image();
+bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";  // Full URL for testing
+
+bgImage.onload = function() {
+  console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear the canvas before drawing the new image
+  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
+};
+
+// If the image is already cached (loaded), draw it immediately
+if (bgImage.complete) {
+  console.log("Background image already loaded.");
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height); // Clear canvas before drawing
+  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw image
 }
+
+// Default drawing settings
+let isDrawing = false;
+let isErasing = false;
+let brushColor = "#ff0000";  // Default brush color
+let brushSize = 10;
+let eraserSize = 10;
+let history = [];
+let historyStep = -1;
 
 // Handle canvas drawing and touch events
 function saveState() {
