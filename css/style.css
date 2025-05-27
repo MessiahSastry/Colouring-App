@@ -4,6 +4,7 @@ html, body {
   font-family: 'Comic Sans MS', cursive;
   overflow: hidden;  /* Prevent scrolling */
   height: 100%;  /* Ensure full height of the viewport */
+  width: 100%;   /* Ensure full width of the viewport */
 }
 
 /* Video Background */
@@ -15,6 +16,13 @@ video.background-video {
   height: 100%;
   object-fit: cover; /* Ensure the video covers the entire screen */
   z-index: -1;       /* Keeps the video behind other elements */
+}
+
+/* Make sure the body doesn't scroll */
+body {
+  position: relative;
+  height: 100vh;     /* Full viewport height */
+  overflow: hidden;  /* Disable scrolling */
 }
 
 /* Zoom Container */
@@ -38,6 +46,15 @@ video.background-video {
 }
 
 /* School Title */
+.school-title,
+.toolbar-wrapper,
+.toolbar-toggle,
+.backBtn {
+  position: fixed;
+  transform: none !important;
+  z-index: 9999;
+}
+
 .school-title {
   font-size: 30px;
   text-align: center;
@@ -53,7 +70,6 @@ video.background-video {
   letter-spacing: 1px;
   margin-bottom: 5px;  /* Reduced margin between title and subtitle */
   color: #34495e;  /* Darker color for the main heading */
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);  /* Added subtle shadow for contrast */
 }
 
 .school-title h2 {
@@ -166,6 +182,3 @@ button, input, a {
   75% { transform: translate(200px, -50px); }
   100% { transform: translate(0, 0); }
 }
-
-
-
