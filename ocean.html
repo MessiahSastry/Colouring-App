@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Coloring Page</title>
+  <title>Coloring Page - Ocean</title>
   <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -27,7 +27,6 @@
     <button id="downloadBtn">📸 Download</button>
     <button id="uploadBtn">🖼️ Upload</button>
     <button id="musicToggle">🎵 Music</button>
-    <!-- Full-Screen Button -->
     <button id="fullscreenBtn">🌐 Full-Screen</button>
   </div>
 
@@ -41,29 +40,5 @@
   </audio>
 
   <script src="js/script.js"></script>
-
-  <script>
-    let selectedColor = "#ff0000";
-
-    var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
-      width: 100,
-      color: selectedColor
-    });
-
-    colorPicker.on("color:change", function(color) {
-      selectedColor = color.hexString;
-      // Use this selectedColor in your drawing logic
-    });
-
-    // Fullscreen toggle functionality
-    document.getElementById('fullscreenBtn').onclick = function() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    };
-  </script>
 </body>
 </html>
-
