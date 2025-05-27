@@ -22,8 +22,11 @@ window.addEventListener("resize", () => {
 const bgImage = new Image();
 bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";  // Full URL for testing
 
+// Check if the image is loaded correctly
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
+  console.log("Canvas size:", bgCanvas.width, bgCanvas.height); // Log canvas size
+
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear the canvas before drawing the new image
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
 };
