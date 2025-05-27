@@ -27,22 +27,15 @@ let eraserSize = 10;
 let history = [];
 let historyStep = -1;
 
-// Set the background image based on the page URL (using full URL for testing)
-const bgImage = new Image();
-bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";  // Full URL for testing
-
-bgImage.onload = function() {
-  console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
-  console.log("Canvas size:", bgCanvas.width, bgCanvas.height);  // Log the canvas size
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing the new image
-  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
-};
-
-// If the image is already cached (loaded), draw it immediately
-if (bgImage.complete) {
-  console.log("Background image already loaded.");
-  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw image
+// Test: Draw a simple color instead of an image
+function drawBackground() {
+  bgCtx.fillStyle = "#ff6347"; // Set a solid color (e.g., tomato red)
+  bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height); // Draw the color on the canvas
 }
+
+// Check if canvas and drawing work by drawing a rectangle
+bgCtx.fillStyle = "#ff6347";  // Set color
+bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);  // Draw rectangle as a background
 
 // Handle canvas drawing and touch events
 function saveState() {
