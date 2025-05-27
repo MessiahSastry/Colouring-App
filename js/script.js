@@ -20,17 +20,22 @@ resizeCanvas();  // Initial resize on page load
 
 window.addEventListener("resize", resizeCanvas);  // Redraw on resize
 
-// Set the background image (using the full URL for testing)
+// Set the background image based on the current page
 const bgImage = new Image();
-bgImage.src = "https://messiahsastry.github.io/Colouring-App/images/Jungle.png";  // Full URL for testing
+const path = location.pathname.toLowerCase();  // Get the current page URL
+if (path.includes("jungle")) bgImage.src = "images/Jungle.png";
+else if (path.includes("dinosaur")) bgImage.src = "images/Dinosaur.png";
+else if (path.includes("garden")) bgImage.src = "images/Garden.png";
+else if (path.includes("farm")) bgImage.src = "images/Farm.png";
+else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
 
-// Check if the image is loaded correctly
+// When the image is loaded, draw it on the background canvas
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
   console.log("Canvas size:", bgCanvas.width, bgCanvas.height); // Log canvas size
   
   // Clear the canvas before drawing the new image
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear any existing content
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
 };
 
