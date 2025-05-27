@@ -109,19 +109,17 @@ canvas.addEventListener('touchend', () => {
 
 // Brush button functionality
 document.getElementById('brushBtn').onclick = () => {
-  console.log('Brush Button Clicked');
   isErasing = false;  // Set to brush mode
 };
 
 // Eraser button functionality
 document.getElementById('eraserBtn').onclick = () => {
-  console.log('Eraser Button Clicked');
   isErasing = true;   // Set to eraser mode
 };
 
 // Color Picker functionality
 document.getElementById('colorPicker').oninput = e => {
-  brushColor = e.target.value;  // Update the brush color
+  brushColor = e.target.value;  // Update the brush color when the user selects a color
 };
 
 // Brush size control functionality
