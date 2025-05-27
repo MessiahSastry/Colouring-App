@@ -3,10 +3,10 @@ const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
-let scale = 1; // Scale factor for zooming
-let offsetX = 0; // Offset for the canvas when zoomed
-let offsetY = 0;
+// Initial scale factor
+let scale = 1;
 
+// Function to resize the canvas and adjust the background image
 function resizeCanvas() {
   bgCanvas.width = canvas.width = window.innerWidth;
   bgCanvas.height = canvas.height = window.innerHeight;
@@ -14,21 +14,12 @@ function resizeCanvas() {
 }
 resizeCanvas();
 
+// Adjust canvas on window resize
 window.addEventListener("resize", () => {
   resizeCanvas();
   drawBackground();
   restoreState(historyStep);
 });
-
-// Function to handle zooming
-function zoomCanvas(factor) {
-  scale = Math.min(Math.max(0.5, scale * factor), 3); // Limit the zoom factor
-  offsetX = (canvas.width - canvas.width * scale) / 2;
-  offsetY = (canvas.height - canvas.height * scale) / 2;
-  canvas.style.transform = `scale(${scale})`;
-  canvas.style.transformOrigin = "top left";
-  drawBackground();
-}
 
 let isDrawing = false;
 let isErasing = false;
@@ -46,16 +37,17 @@ else if (path.includes("garden")) bgImage.src = "images/Garden.png";
 else if (path.includes("farm")) bgImage.src = "images/Farm.png";
 else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
 
+// Function to draw the background image, adjusting for canvas size
 function drawBackground() {
   bgImage.onload = () => {
     bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+    // Scale the image to fit the canvas
     bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);
   };
   if (bgImage.complete) {
     bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);
   }
 }
-drawBackground();
 
 function saveState() {
   history = history.slice(0, historyStep + 1);
@@ -70,83 +62,75 @@ function restoreState(index) {
   img.src = history[index];
 }
 
+// Event listeners for drawing
 canvas.addEventListener('mousedown', e => {
   isDrawing = true;
   ctx.beginPath();
   ctx.moveTo(e.offsetX, e.offsetY);
 });
-
 canvas.addEventListener('mousemove', e => {
   if (!isDrawing) return;
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = brushColor;  // Using brushColor here
+  ctx.strokeStyle = brushColor;
   ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
 });
-
 canvas.addEventListener('mouseup', () => { isDrawing = false; saveState(); });
 
-// Adjust touch coordinates based on zoom level
+// Mobile touch events
 canvas.addEventListener('touchstart', e => {
-  if (e.touches.length > 1) return; // Ignore multi-touch
+  if (e.touches.length > 1) return;
   const t = e.touches[0];
-  const touchX = (t.clientX - offsetX) / scale;
-  const touchY = (t.clientY - offsetY) / scale;
+  const touchX = t.clientX / scale;
+  const touchY = t.clientY / scale;
   ctx.beginPath();
   ctx.moveTo(touchX, touchY);
   isDrawing = true;
 });
-
 canvas.addEventListener('touchmove', e => {
   if (e.touches.length > 1) return;
   if (!isDrawing) return;
   const t = e.touches[0];
-  const touchX = (t.clientX - offsetX) / scale;
-  const touchY = (t.clientY - offsetY) / scale;
+  const touchX = t.clientX / scale;
+  const touchY = t.clientY / scale;
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor; // Brush color for mobile
+  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor;
   ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
   ctx.lineTo(touchX, touchY);
   ctx.stroke();
   e.preventDefault();
 });
-
 canvas.addEventListener('touchend', () => {
   if (!isDrawing) return;
   isDrawing = false;
   saveState();
 });
 
-// Brush and Eraser toggle functionality
-document.getElementById('brushBtn').onclick = () => {
-  isErasing = false;
-};
-document.getElementById('eraserBtn').onclick = () => {
-  isErasing = true;
-};
+// Brush and Eraser functionality
+document.getElementById('brushBtn').onclick = () => isErasing = false;
+document.getElementById('eraserBtn').onclick = () => isErasing = true;
 
-// Color picker functionality (keeping the color picker initialization)
+// Color picker functionality
 var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
   width: 100,
   color: brushColor
 });
 colorPicker.on("color:change", function(color) {
-  brushColor = color.hexString;  // Update brush color when color is changed
+  brushColor = color.hexString; // Update brush color when color is changed
 });
 
 // Brush and Eraser size functionality
 document.getElementById('brushSize').oninput = e => brushSize = e.target.value;
 document.getElementById('eraserSize').oninput = e => eraserSize = e.target.value;
 
-// Save functionality
+// Save, Load, Download, Undo, Redo, Upload functionalities (same as before)
 document.getElementById('saveBtn').onclick = () => {
   localStorage.setItem(location.pathname, canvas.toDataURL());
 };
 
-// Load functionality
 document.getElementById('loadBtn').onclick = () => {
   let data = localStorage.getItem(location.pathname);
   if (data) {
@@ -156,7 +140,6 @@ document.getElementById('loadBtn').onclick = () => {
   }
 };
 
-// Download functionality
 document.getElementById('downloadBtn').onclick = () => {
   const link = document.createElement('a');
   link.download = 'drawing.png';
@@ -164,17 +147,14 @@ document.getElementById('downloadBtn').onclick = () => {
   link.click();
 };
 
-// Undo functionality
 document.getElementById('undoBtn').onclick = () => {
   if (historyStep > 0) { historyStep--; restoreState(historyStep); }
 };
 
-// Redo functionality
 document.getElementById('redoBtn').onclick = () => {
   if (historyStep < history.length - 1) { historyStep++; restoreState(historyStep); }
 };
 
-// Upload image functionality
 document.getElementById('uploadBtn').onclick = () => {
   const input = document.createElement('input');
   input.type = 'file';
