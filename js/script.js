@@ -1,61 +1,146 @@
+// js/script.js
+
+// ---- DOM elements ----
 const bgCanvas = document.getElementById('bgCanvas');
 const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
-// Resize canvas to fit the window and ensure the background is redrawn
+let brushColor = "#ff0000";
+let brushSize = 10;
+let eraserSize = 10;
+let isDrawing = false;
+let isErasing = false;
+let lastX = 0, lastY = 0;
+let history = [];
+let historyStep = -1;
+let currentBgDataURL = null;
+
+// --- Helper: set canvas sizes ---
 function resizeCanvas() {
-  bgCanvas.width = window.innerWidth;
-  bgCanvas.height = window.innerHeight;
-  console.log("Canvas resized:", bgCanvas.width, bgCanvas.height); // Log resized canvas dimensions
-  
-  // Redraw the background image on canvas when resized
-  if (bgImage.complete) {
-    bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height); // Clear before drawing
-    bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height); // Draw image
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  bgCanvas.width = canvas.width = w;
+  bgCanvas.height = canvas.height = h;
+  drawBackgroundImage();
+  if (historyStep >= 0) restoreState(historyStep);
+}
+window.addEventListener('resize', resizeCanvas);
+
+// --- Background image setup ---
+const bgImage = new Image();
+let scene = null;
+
+// Determine scene from pathname
+if (location.pathname.toLowerCase().includes("jungle")) { bgImage.src = "images/Jungle.png"; scene = "jungle"; }
+else if (location.pathname.toLowerCase().includes("dinosaur")) { bgImage.src = "images/Dinosaur.png"; scene = "dinosaur"; }
+else if (location.pathname.toLowerCase().includes("garden")) { bgImage.src = "images/Garden.png"; scene = "garden"; }
+else if (location.pathname.toLowerCase().includes("farm")) { bgImage.src = "images/Farm.png"; scene = "farm"; }
+else if (location.pathname.toLowerCase().includes("ocean")) { bgImage.src = "images/Ocean.png"; scene = "ocean"; }
+
+// Draws background (scene image or uploaded)
+function drawBackgroundImage() {
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+  if (currentBgDataURL) {
+    let img = new Image();
+    img.onload = () => bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
+    img.src = currentBgDataURL;
+  } else if (bgImage.src && (scene || bgImage.complete)) {
+    bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);
   }
 }
 
-resizeCanvas();  // Initial resize on page load
-
-window.addEventListener("resize", resizeCanvas);  // Redraw on resize
-
-// Set the background image based on the current page
-const bgImage = new Image();
-const path = location.pathname.toLowerCase();  // Get the current page URL
-if (path.includes("jungle")) bgImage.src = "images/Jungle.png";
-else if (path.includes("dinosaur")) bgImage.src = "images/Dinosaur.png";
-else if (path.includes("garden")) bgImage.src = "images/Garden.png";
-else if (path.includes("farm")) bgImage.src = "images/Farm.png";
-else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
-
-// When the image is loaded, draw it on the background canvas
+// When background image loads, redraw
 bgImage.onload = function() {
-  console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
-  console.log("Canvas size:", bgCanvas.width, bgCanvas.height); // Log canvas size
-  
-  // Clear the canvas before drawing the new image
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear any existing content
-  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
+  drawBackgroundImage();
 };
 
-// If the image is already cached (loaded), draw it immediately
-if (bgImage.complete) {
-  console.log("Background image already loaded.");
-  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing
-  bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw image
+// --- Set up iro.js color picker (only if wheel exists) ---
+if (document.getElementById('colorPickerWheel')) {
+  let colorPicker = new iro.ColorPicker("#colorPickerWheel", {
+    width: 100,
+    color: brushColor
+  });
+  colorPicker.on("color:change", function(color) {
+    brushColor = color.hexString;
+  });
 }
 
-// Default drawing settings
-let isDrawing = false;
-let isErasing = false;
-let brushColor = "#ff0000";  // Default brush color
-let brushSize = 10;
-let eraserSize = 10;
-let history = [];
-let historyStep = -1;
+// --- Toolbar buttons ---
+const brushBtn = document.getElementById('brushBtn');
+const eraserBtn = document.getElementById('eraserBtn');
+const brushSizeSlider = document.getElementById('brushSize');
+const eraserSizeSlider = document.getElementById('eraserSize');
+const undoBtn = document.getElementById('undoBtn');
+const redoBtn = document.getElementById('redoBtn');
+const saveBtn = document.getElementById('saveBtn');
+const loadBtn = document.getElementById('loadBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const uploadBtn = document.getElementById('uploadBtn');
+const musicToggle = document.getElementById('musicToggle');
+const toolbarToggle = document.getElementById('toggleToolbar');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-// Handle canvas drawing and touch events
+// ---- Toolbar logic ----
+if (brushBtn) brushBtn.onclick = () => { isErasing = false; };
+if (eraserBtn) eraserBtn.onclick = () => { isErasing = true; };
+if (brushSizeSlider) brushSizeSlider.oninput = e => brushSize = parseInt(e.target.value);
+if (eraserSizeSlider) eraserSizeSlider.oninput = e => eraserSize = parseInt(e.target.value);
+
+// --- Drawing logic ---
+function getXY(e) {
+  let rect = canvas.getBoundingClientRect();
+  let x, y;
+  if (e.touches) {
+    x = e.touches[0].clientX - rect.left;
+    y = e.touches[0].clientY - rect.top;
+  } else {
+    x = e.clientX - rect.left;
+    y = e.clientY - rect.top;
+  }
+  return [x, y];
+}
+
+function startDraw(e) {
+  isDrawing = true;
+  [lastX, lastY] = getXY(e);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('touchmove', draw, {passive:false});
+}
+
+function endDraw(e) {
+  if (isDrawing) {
+    isDrawing = false;
+    ctx.closePath();
+    saveState();
+  }
+  canvas.removeEventListener('mousemove', draw);
+  canvas.removeEventListener('touchmove', draw);
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+  e.preventDefault && e.preventDefault();
+  let [x, y] = getXY(e);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = isErasing ? "#fff" : brushColor;
+  ctx.lineWidth = isErasing ? eraserSize : brushSize;
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  [lastX, lastY] = [x, y];
+}
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mouseout', endDraw);
+canvas.addEventListener('touchstart', function(e) {startDraw(e);}, {passive:false});
+canvas.addEventListener('touchend', endDraw);
+canvas.addEventListener('touchcancel', endDraw);
+
+// ---- History (Undo/Redo) ----
 function saveState() {
   history = history.slice(0, historyStep + 1);
   history.push(canvas.toDataURL());
@@ -64,48 +149,39 @@ function saveState() {
 
 function restoreState(index) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const img = new Image();
-  img.onload = () => ctx.drawImage(img, 0, 0);
-  img.src = history[index];
+  if (history[index]) {
+    let img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    img.src = history[index];
+  }
 }
 
-// Brush and Eraser toggle functionality
-document.getElementById('brushBtn').onclick = () => {
-  isErasing = false;
+if (undoBtn) undoBtn.onclick = () => {
+  if (historyStep > 0) { historyStep--; restoreState(historyStep);}
 };
-document.getElementById('eraserBtn').onclick = () => {
-  isErasing = true;
+if (redoBtn) redoBtn.onclick = () => {
+  if (historyStep < history.length - 1) { historyStep++; restoreState(historyStep);}
 };
 
-// Brush and Eraser size functionality
-document.getElementById('brushSize').oninput = e => brushSize = e.target.value;
-document.getElementById('eraserSize').oninput = e => eraserSize = e.target.value;
-
-// Save and load functions for canvas state
-document.getElementById('saveBtn').onclick = () => { localStorage.setItem(location.pathname, canvas.toDataURL()); };
-document.getElementById('loadBtn').onclick = () => {
+// ---- Save/Load/Download ----
+if (saveBtn) saveBtn.onclick = () => { localStorage.setItem(location.pathname, canvas.toDataURL()); };
+if (loadBtn) loadBtn.onclick = () => {
   let data = localStorage.getItem(location.pathname);
   if (data) {
     let img = new Image();
     img.src = data;
-    img.onload = () => ctx.drawImage(img, 0, 0);
+    img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   }
 };
-
-// Download the canvas content as a PNG file
-document.getElementById('downloadBtn').onclick = () => {
+if (downloadBtn) downloadBtn.onclick = () => {
   const link = document.createElement('a');
   link.download = 'drawing.png';
   link.href = canvas.toDataURL();
   link.click();
 };
 
-// Undo and Redo functions
-document.getElementById('undoBtn').onclick = () => { if (historyStep > 0) { historyStep--; restoreState(historyStep); } };
-document.getElementById('redoBtn').onclick = () => { if (historyStep < history.length - 1) { historyStep++; restoreState(historyStep); } };
-
-// Upload image functionality
-document.getElementById('uploadBtn').onclick = () => {
+// ---- Upload Outline Image ----
+if (uploadBtn) uploadBtn.onclick = () => {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
@@ -114,12 +190,8 @@ document.getElementById('uploadBtn').onclick = () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = e => {
-        const img = new Image();
-        img.onload = () => {
-          bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-          bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
-        };
-        img.src = e.target.result;
+        currentBgDataURL = e.target.result;
+        drawBackgroundImage();
       };
       reader.readAsDataURL(file);
     }
@@ -127,20 +199,22 @@ document.getElementById('uploadBtn').onclick = () => {
   input.click();
 };
 
-// Music Toggle functionality
-document.getElementById('musicToggle').onclick = () => {
+// ---- Music toggle ----
+if (musicToggle) musicToggle.onclick = () => {
   const music = document.getElementById('bgMusic');
+  if (!music) return;
   music.muted = false;
   if (music.paused) music.play(); else music.pause();
+  // Optionally: Change button style to show play/pause state
 };
 
-// Toggle toolbar visibility
-document.getElementById('toggleToolbar').onclick = () => {
+// ---- Toolbar toggle ----
+if (toolbarToggle) toolbarToggle.onclick = () => {
   document.getElementById('toolbar').classList.toggle('hide');
 };
 
-// Fullscreen functionality
-document.getElementById('fullscreenBtn').onclick = function() {
+// ---- Fullscreen ----
+if (fullscreenBtn) fullscreenBtn.onclick = function() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
   } else {
@@ -148,5 +222,15 @@ document.getElementById('fullscreenBtn').onclick = function() {
   }
 };
 
-// Initialize page state
-window.onload = () => saveState();
+// ---- INITIALIZATION ----
+window.onload = () => {
+  resizeCanvas();
+  saveState();
+};
+
+// --- Special: For Upload Page, show uploaded image as outline bg ---
+if (location.pathname.toLowerCase().includes("upload")) {
+  // No default scene image; only user-uploaded
+  currentBgDataURL = null;
+}
+
