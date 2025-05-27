@@ -141,21 +141,6 @@
       display: none;
     }
 
-    /* Full-Screen Button Styling */
-    #fullscreenBtn {
-      background: #ff6347;
-      color: white;
-      margin-top: 10px;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      padding: 10px;
-      transition: background 0.3s ease;
-    }
-
-    #fullscreenBtn:hover {
-      background: #e74c3c;
-    }
   </style>
 </head>
 <body>
@@ -183,18 +168,10 @@
     <a href="upload.html"><button>📷 Upload Your Picture</button></a>
   </div>
 
-  <button id="fullscreenBtn">🌐 Full-Screen</button>
-
   <script src="js/script.js"></script>
   <script>
-    // Fullscreen toggle functionality
-    document.getElementById('fullscreenBtn').onclick = function() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    };
+    // Fullscreen toggle functionality (No fullscreen button now)
+    // Removed Fullscreen button code as per the request.
   </script>
 </body>
 </html>
