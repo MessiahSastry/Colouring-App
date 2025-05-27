@@ -3,19 +3,33 @@ const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
-// Resize canvas when the window is resized
+let scale = 1; // Scale factor for zooming
+let offsetX = 0; // Offset for the canvas when zoomed
+let offsetY = 0;
+
 function resizeCanvas() {
   bgCanvas.width = canvas.width = window.innerWidth;
   bgCanvas.height = canvas.height = window.innerHeight;
+  drawBackground();
 }
 resizeCanvas();
+
 window.addEventListener("resize", () => {
   resizeCanvas();
   drawBackground();
   restoreState(historyStep);
 });
 
-// Drawing setup
+// Function to handle zooming
+function zoomCanvas(factor) {
+  scale = Math.min(Math.max(0.5, scale * factor), 3); // Limit the zoom factor
+  offsetX = (canvas.width - canvas.width * scale) / 2;
+  offsetY = (canvas.height - canvas.height * scale) / 2;
+  canvas.style.transform = `scale(${scale})`;
+  canvas.style.transformOrigin = "top left";
+  drawBackground();
+}
+
 let isDrawing = false;
 let isErasing = false;
 let brushColor = "#ff0000"; // Default color is red
@@ -24,7 +38,6 @@ let eraserSize = 10;
 let history = [];
 let historyStep = -1;
 
-// Load background image depending on the path
 const bgImage = new Image();
 const path = location.pathname.toLowerCase();
 if (path.includes("jungle")) bgImage.src = "images/Jungle.png";
@@ -33,7 +46,6 @@ else if (path.includes("garden")) bgImage.src = "images/Garden.png";
 else if (path.includes("farm")) bgImage.src = "images/Farm.png";
 else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
 
-// Draw the background image
 function drawBackground() {
   bgImage.onload = () => {
     bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
@@ -45,12 +57,12 @@ function drawBackground() {
 }
 drawBackground();
 
-// Save and restore canvas states
 function saveState() {
   history = history.slice(0, historyStep + 1);
   history.push(canvas.toDataURL());
   historyStep++;
 }
+
 function restoreState(index) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const img = new Image();
@@ -58,42 +70,50 @@ function restoreState(index) {
   img.src = history[index];
 }
 
-// Drawing functionality
 canvas.addEventListener('mousedown', e => {
   isDrawing = true;
   ctx.beginPath();
   ctx.moveTo(e.offsetX, e.offsetY);
 });
+
 canvas.addEventListener('mousemove', e => {
   if (!isDrawing) return;
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = brushColor; // Using brushColor here
+  ctx.strokeStyle = brushColor;  // Using brushColor here
   ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
 });
+
 canvas.addEventListener('mouseup', () => { isDrawing = false; saveState(); });
 
+// Adjust touch coordinates based on zoom level
 canvas.addEventListener('touchstart', e => {
-  if (e.touches.length > 1) return;
+  if (e.touches.length > 1) return; // Ignore multi-touch
   const t = e.touches[0];
+  const touchX = (t.clientX - offsetX) / scale;
+  const touchY = (t.clientY - offsetY) / scale;
   ctx.beginPath();
-  ctx.moveTo(t.clientX, t.clientY);
+  ctx.moveTo(touchX, touchY);
   isDrawing = true;
 });
+
 canvas.addEventListener('touchmove', e => {
   if (e.touches.length > 1) return;
   if (!isDrawing) return;
   const t = e.touches[0];
+  const touchX = (t.clientX - offsetX) / scale;
+  const touchY = (t.clientY - offsetY) / scale;
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
   ctx.strokeStyle = isErasing ? "#ffffff" : brushColor; // Brush color for mobile
   ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
-  ctx.lineTo(t.clientX, t.clientY);
+  ctx.lineTo(touchX, touchY);
   ctx.stroke();
   e.preventDefault();
 });
+
 canvas.addEventListener('touchend', () => {
   if (!isDrawing) return;
   isDrawing = false;
@@ -108,12 +128,8 @@ document.getElementById('eraserBtn').onclick = () => {
   isErasing = true;
 };
 
-// Create color picker dynamically (no div in HTML)
-let colorPickerContainer = document.createElement("div");
-colorPickerContainer.id = "colorPickerWheel"; // Give it an id to style it
-document.body.appendChild(colorPickerContainer); // Append it to the body
-
-let colorPicker = new iro.ColorPicker("#colorPickerWheel", {
+// Color picker functionality (keeping the color picker initialization)
+var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
   width: 100,
   color: brushColor
 });
