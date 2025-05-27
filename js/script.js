@@ -3,14 +3,6 @@ const canvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
-let isDrawing = false;
-let isErasing = false;
-let brushColor = "#ff0000"; // Default color for the brush
-let brushSize = 10;        // Default size for the brush
-let eraserSize = 10;       // Default size for the eraser
-let history = [];
-let historyStep = -1;      // Keep track of the history for undo/redo
-
 function resizeCanvas() {
   bgCanvas.width = canvas.width = window.innerWidth;
   bgCanvas.height = canvas.height = window.innerHeight;
@@ -19,8 +11,16 @@ resizeCanvas();
 window.addEventListener("resize", () => {
   resizeCanvas();
   drawBackground();
-  restoreState(historyStep); // Restore the last drawing state
+  restoreState(historyStep);
 });
+
+let isDrawing = false;
+let isErasing = false;
+let brushColor = "#ff0000"; // Default color is red
+let brushSize = 10;
+let eraserSize = 10;
+let history = [];
+let historyStep = -1;
 
 const bgImage = new Image();
 const path = location.pathname.toLowerCase();
@@ -41,144 +41,115 @@ function drawBackground() {
 }
 drawBackground();
 
-// Save canvas state to history for undo/redo functionality
 function saveState() {
-  history = history.slice(0, historyStep + 1); // Trim the future history if we have undone actions
-  history.push(canvas.toDataURL()); // Save the current canvas image
+  history = history.slice(0, historyStep + 1);
+  history.push(canvas.toDataURL());
   historyStep++;
 }
-
-// Restore canvas state from history
 function restoreState(index) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear current canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   const img = new Image();
-  img.onload = () => ctx.drawImage(img, 0, 0); // Draw the restored state
+  img.onload = () => ctx.drawImage(img, 0, 0);
   img.src = history[index];
 }
 
-// Brush tool
 canvas.addEventListener('mousedown', e => {
   isDrawing = true;
   ctx.beginPath();
   ctx.moveTo(e.offsetX, e.offsetY);
 });
-
-// Brush/eraser drawing logic
 canvas.addEventListener('mousemove', e => {
   if (!isDrawing) return;
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor;
-  ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over"; // Set the right operation
+  ctx.strokeStyle = brushColor;  // Using brushColor here
+  ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
 });
+canvas.addEventListener('mouseup', () => { isDrawing = false; saveState(); });
 
-canvas.addEventListener('mouseup', () => { 
-  isDrawing = false; 
-  saveState(); // Save state after drawing
-});
-
-// Mobile touch support
 canvas.addEventListener('touchstart', e => {
-  if (e.touches.length > 1) return; // Only support single touch
+  if (e.touches.length > 1) return;
   const t = e.touches[0];
   ctx.beginPath();
   ctx.moveTo(t.clientX, t.clientY);
   isDrawing = true;
 });
-
 canvas.addEventListener('touchmove', e => {
-  if (e.touches.length > 1) return; // Only support single touch
+  if (e.touches.length > 1) return;
   if (!isDrawing) return;
   const t = e.touches[0];
   ctx.lineWidth = isErasing ? eraserSize : brushSize;
   ctx.lineCap = "round";
-  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor;
+  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor; // Brush color for mobile
   ctx.globalCompositeOperation = isErasing ? "destination-out" : "source-over";
   ctx.lineTo(t.clientX, t.clientY);
   ctx.stroke();
-  e.preventDefault(); // Prevent scrolling while drawing
+  e.preventDefault();
 });
-
-canvas.addEventListener('touchend', () => { 
+canvas.addEventListener('touchend', () => {
   if (!isDrawing) return;
-  isDrawing = false; 
-  saveState(); // Save state after drawing
+  isDrawing = false;
+  saveState();
 });
 
-// Brush button functionality
+// Brush and Eraser toggle functionality
 document.getElementById('brushBtn').onclick = () => {
-  isErasing = false;  // Set to brush mode
+  isErasing = false;
 };
-
-// Eraser button functionality
 document.getElementById('eraserBtn').onclick = () => {
-  isErasing = true;   // Set to eraser mode
+  isErasing = true;
 };
 
-// Color Picker functionality
-document.getElementById('colorPicker').oninput = e => {
-  brushColor = e.target.value;  // Update the brush color when the user selects a color
-};
+// Color picker functionality
+var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
+  width: 100,
+  color: brushColor
+});
+colorPicker.on("color:change", function(color) {
+  brushColor = color.hexString;  // Update brush color when color is changed
+});
 
-// Brush size control functionality
-document.getElementById('brushSize').oninput = e => {
-  brushSize = e.target.value;  // Update the brush size
-};
-
-// Eraser size control functionality
-document.getElementById('eraserSize').oninput = e => {
-  eraserSize = e.target.value; // Update the eraser size
-};
+// Brush and Eraser size functionality
+document.getElementById('brushSize').oninput = e => brushSize = e.target.value;
+document.getElementById('eraserSize').oninput = e => eraserSize = e.target.value;
 
 // Save functionality
 document.getElementById('saveBtn').onclick = () => {
-  console.log('Save Button Clicked');
-  localStorage.setItem(location.pathname, canvas.toDataURL());  // Save the canvas to localStorage
+  localStorage.setItem(location.pathname, canvas.toDataURL());
 };
 
 // Load functionality
 document.getElementById('loadBtn').onclick = () => {
-  console.log('Load Button Clicked');
   let data = localStorage.getItem(location.pathname);
   if (data) {
     let img = new Image();
     img.src = data;
-    img.onload = () => ctx.drawImage(img, 0, 0);  // Draw the saved state on the canvas
+    img.onload = () => ctx.drawImage(img, 0, 0);
   }
 };
 
 // Download functionality
 document.getElementById('downloadBtn').onclick = () => {
-  console.log('Download Button Clicked');
   const link = document.createElement('a');
   link.download = 'drawing.png';
-  link.href = canvas.toDataURL();  // Download the canvas image
+  link.href = canvas.toDataURL();
   link.click();
 };
 
 // Undo functionality
 document.getElementById('undoBtn').onclick = () => {
-  console.log('Undo Button Clicked');
-  if (historyStep > 0) { 
-    historyStep--; 
-    restoreState(historyStep);  // Restore previous state
-  }
+  if (historyStep > 0) { historyStep--; restoreState(historyStep); }
 };
 
 // Redo functionality
 document.getElementById('redoBtn').onclick = () => {
-  console.log('Redo Button Clicked');
-  if (historyStep < history.length - 1) { 
-    historyStep++; 
-    restoreState(historyStep);  // Restore the next state
-  }
+  if (historyStep < history.length - 1) { historyStep++; restoreState(historyStep); }
 };
 
-// Upload functionality
+// Upload image functionality
 document.getElementById('uploadBtn').onclick = () => {
-  console.log('Upload Button Clicked');
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
@@ -190,33 +161,30 @@ document.getElementById('uploadBtn').onclick = () => {
         const img = new Image();
         img.onload = () => {
           bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-          bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);  // Upload the image onto the canvas
+          bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
         };
         img.src = e.target.result;
       };
-      reader.readAsDataURL(file); // Read the file
+      reader.readAsDataURL(file);
     }
   };
-  input.click();  // Trigger the file picker
+  input.click();
 };
 
 // Music Toggle functionality
 document.getElementById('musicToggle').onclick = () => {
-  console.log('Music Toggle Button Clicked');
   const music = document.getElementById('bgMusic');
   music.muted = false;
-  if (music.paused) music.play(); else music.pause();  // Toggle music play/pause
+  if (music.paused) music.play(); else music.pause();
 };
 
-// Toolbar toggle functionality
+// Toggle toolbar visibility
 document.getElementById('toggleToolbar').onclick = () => {
-  console.log('Toolbar Toggle Button Clicked');
-  document.getElementById('toolbar').classList.toggle('hide');  // Hide or show toolbar
+  document.getElementById('toolbar').classList.toggle('hide');
 };
 
-// Fullscreen functionality
+// Fullscreen toggle functionality
 document.getElementById('fullscreenBtn').onclick = function() {
-  console.log('Fullscreen Button Clicked');
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
   } else {
@@ -224,4 +192,4 @@ document.getElementById('fullscreenBtn').onclick = function() {
   }
 };
 
-window.onload = () => saveState();  // Save the initial state of the canvas when page loads
+window.onload = () => saveState();
