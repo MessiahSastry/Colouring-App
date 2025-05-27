@@ -35,14 +35,14 @@ else if (path.includes("garden")) bgImage.src = "images/Garden.png";
 else if (path.includes("farm")) bgImage.src = "images/Farm.png";
 else if (path.includes("ocean")) bgImage.src = "images/Ocean.png";
 
-// Debug: Log the image source to ensure the right image is being used
+// Check if the image is already loaded and draw it
 bgImage.onload = function() {
   console.log("Background image loaded successfully:", bgImage.src);  // Log the loaded image source
   bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);  // Clear canvas before drawing the new image
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw the image on the canvas
 };
 
-// Check if the image is already loaded and draw it
+// If the image is already cached (loaded), draw it immediately
 if (bgImage.complete) {
   console.log("Background image already loaded.");
   bgCtx.drawImage(bgImage, 0, 0, bgCanvas.width, bgCanvas.height);  // Draw image
@@ -62,51 +62,6 @@ function restoreState(index) {
   img.src = history[index];
 }
 
-// Mouse events for drawing
-canvas.addEventListener('mousedown', e => {
-  isDrawing = true;
-  ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
-});
-canvas.addEventListener('mousemove', e => {
-  if (!isDrawing) return;
-  ctx.lineWidth = isErasing ? eraserSize : brushSize;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = brushColor;
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
-});
-canvas.addEventListener('mouseup', () => { isDrawing = false; saveState(); });
-
-// Mobile touch events
-canvas.addEventListener('touchstart', e => {
-  if (e.touches.length > 1) return;  // Prevent multi-touch
-  const t = e.touches[0];
-  const touchX = t.clientX;
-  const touchY = t.clientY;
-  ctx.beginPath();
-  ctx.moveTo(touchX, touchY);
-  isDrawing = true;
-});
-canvas.addEventListener('touchmove', e => {
-  if (e.touches.length > 1) return;  // Prevent multi-touch
-  if (!isDrawing) return;
-  const t = e.touches[0];
-  const touchX = t.clientX;
-  const touchY = t.clientY;
-  ctx.lineWidth = isErasing ? eraserSize : brushSize;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = isErasing ? "#ffffff" : brushColor;
-  ctx.lineTo(touchX, touchY);
-  ctx.stroke();
-  e.preventDefault();
-});
-canvas.addEventListener('touchend', () => {
-  if (!isDrawing) return;
-  isDrawing = false;
-  saveState();
-});
-
 // Brush and Eraser toggle functionality
 document.getElementById('brushBtn').onclick = () => {
   isErasing = false;
@@ -114,15 +69,6 @@ document.getElementById('brushBtn').onclick = () => {
 document.getElementById('eraserBtn').onclick = () => {
   isErasing = true;
 };
-
-// Handle color picker and size inputs
-var colorPicker = new iro.ColorPicker("#colorPickerWheel", {
-  width: 100,
-  color: brushColor
-});
-colorPicker.on("color:change", function(color) {
-  brushColor = color.hexString;  // Update brush color when color is changed
-});
 
 // Brush and Eraser size functionality
 document.getElementById('brushSize').oninput = e => brushSize = e.target.value;
