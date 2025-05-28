@@ -15,13 +15,13 @@ let historyStep = -1;
 let currentBgDataURL = null;
 
 // --------- Pinch-to-Zoom and Pan State ---------
-let baseWidth = 1080, baseHeight = 1440; // Change if your outline image is a different size
-let minScale = 1;
-let maxScale = 3;
+let baseWidth = 1080, baseHeight = 1440; // <--- Change if your outline image is a different size!
+let minScale = 1, maxScale = 3;
 let scale = 1, panX = 0, panY = 0;
 let lastScale = 1, lastPan = [0,0];
 let pinchStart = null;
 let pinchMode = false;
+let firstLoad = true;
 
 // The actual coloring "layer" for user drawing (off-screen canvas)
 let colorLayer = document.createElement('canvas');
@@ -35,20 +35,22 @@ function resizeCanvas() {
   const h = window.innerHeight;
   bgCanvas.width = canvas.width = w;
   bgCanvas.height = canvas.height = h;
-  minScale = Math.max(w/baseWidth, h/baseHeight); // Never shrink smaller than fit
-  scale = Math.max(scale, minScale); // If current scale < min, bump up
-  centerIfNeeded();
+  minScale = Math.max(w/baseWidth, h/baseHeight);
+  if (firstLoad) {
+    scale = minScale;
+    panX = (w - baseWidth * scale)/2;
+    panY = (h - baseHeight * scale)/2;
+    firstLoad = false;
+  } else {
+    if (scale < minScale) {
+      scale = minScale;
+      panX = (w - baseWidth * scale)/2;
+      panY = (h - baseHeight * scale)/2;
+    }
+  }
   drawAll();
 }
 window.addEventListener('resize', resizeCanvas);
-
-// --- Center image on initial load if not zoomed ---
-function centerIfNeeded() {
-  // Center so coloring is always visible on load/resize
-  let displayW = baseWidth * scale, displayH = baseHeight * scale;
-  if (displayW < bgCanvas.width) panX = (bgCanvas.width - displayW)/2;
-  if (displayH < bgCanvas.height) panY = (bgCanvas.height - displayH)/2;
-}
 
 // --------- Pinch/Zoom/Pan Drawing Helpers ----------
 function drawAll() {
@@ -131,7 +133,6 @@ canvas.addEventListener('wheel', function(e){
   let newScale = scale * scaleAmount;
   scale = Math.max(minScale, Math.min(maxScale, newScale));
   let mx = e.offsetX, my = e.offsetY;
-  // adjust pan so zoom is about cursor
   panX = mx - (mx - panX) * (scale/lastScale);
   panY = my - (my - panY) * (scale/lastScale);
   lastScale = scale;
